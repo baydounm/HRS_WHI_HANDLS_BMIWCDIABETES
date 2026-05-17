@@ -1,0 +1,304 @@
+
+. post_stratified_cox, exposure(bmi5_2006) sheet("Table5_BMI_Full_Strat")
+(file C:\Users\baydounm\AppData\Local\Temp\ST_8b40_000001.tmp not found)
+1 2 3 4 5
+1 2 3 4 5
+1 2 3 4 5
+1 2 3 4 5
+1 2 3 4
+1 2 3 4 5
+1 2 3 4 5
+1 2 3 4 5
+1 2 3 4 5
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+
+. 
+. * Interaction tests for Table 5.
+. putexcel set "$xlsx", sheet("Table5_Interactions") modify
+
+. putexcel A1="Table 5 interaction tests: fully adjusted BMI models"
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+
+. putexcel A3="Modifier" B3="df" C3="Wald chi-square" D3="P value"
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+
+. local row=4
+
+. stcox ib1.bmi5_2006##i.agecat_2006 i.RACE_ETHN i.marital_2006 i.education ///
+>     i.totwealth_2006 i.smoking_2006 i.alcohol_2006 i.physic_act_2006
+
+         Failure _d: fail_diabetes==1
+   Analysis time _t: (exit_date-origin)/365.25
+             Origin: time start_date
+  Enter on or after: time start_date
+        ID variable: HHIDPN
+
+Iteration 0:  Log likelihood = -2817.7126
+Iteration 1:  Log likelihood = -2738.2011
+Iteration 2:  Log likelihood = -2731.9135
+Iteration 3:  Log likelihood = -2731.7909
+Iteration 4:  Log likelihood = -2731.7535
+Iteration 5:  Log likelihood = -2731.7398
+Iteration 6:  Log likelihood = -2731.7348
+Iteration 7:  Log likelihood = -2731.7329
+Iteration 8:  Log likelihood = -2731.7322
+Iteration 9:  Log likelihood =  -2731.732
+Iteration 10: Log likelihood = -2731.7319
+Iteration 11: Log likelihood = -2731.7318
+Iteration 12: Log likelihood = -2731.7318
+Iteration 13: Log likelihood = -2731.7318
+Iteration 14: Log likelihood = -2731.7318
+Iteration 15: Log likelihood = -2731.7318
+Iteration 16: Log likelihood = -2731.7318
+Iteration 17: Log likelihood = -2731.7318
+Iteration 18: Log likelihood = -2731.7318
+Iteration 19: Log likelihood = -2731.7318
+Iteration 20: Log likelihood = -2731.7318
+Iteration 21: Log likelihood = -2731.7318
+Iteration 22: Log likelihood = -2731.7318
+Iteration 23: Log likelihood = -2731.7318
+Iteration 24: Log likelihood = -2731.7318
+Iteration 25: Log likelihood = -2731.7318
+Iteration 26: Log likelihood = -2731.7318
+Iteration 27: Log likelihood = -2731.7318
+Iteration 28: Log likelihood = -2731.7318
+Iteration 29: Log likelihood = -2731.7318
+Refining estimates:
+Iteration 0:  Log likelihood = -2731.7318
+Iteration 1:  Log likelihood = -2731.7318
+Iteration 2:  Log likelihood = -2731.7318
+Iteration 3:  Log likelihood = -2731.7318
+
+Cox regression with Breslow method for ties
+
+No. of subjects =       2,885                           Number of obs =  2,885
+No. of failures =         356
+Time at risk    = 40,050.4695
+                                                        LR chi2(35)   = 171.96
+Log likelihood = -2731.7318                             Prob > chi2   = 0.0000
+
+---------------------------------------------------------------------------------------
+                   _t | Haz. ratio   Std. err.      z    P>|z|     [95% conf. interval]
+----------------------+----------------------------------------------------------------
+            bmi5_2006 |
+          Overweight  |    2.19106   .8585897     2.00   0.045     1.016488    4.722875
+           Obesity 1  |   4.635779   1.752983     4.06   0.000     2.209264    9.727424
+           Obesity 2  |   4.051093    1.66469     3.40   0.001     1.810479    9.064649
+           Obesity 3  |    4.67652   1.978294     3.65   0.000     2.040993    10.71529
+                      |
+          agecat_2006 |
+               60-69  |   1.136851   .4819478     0.30   0.762     .4952811    2.609488
+                 70+  |   .7183062   .3000034    -0.79   0.428     .3168122    1.628611
+                      |
+bmi5_2006#agecat_2006 |
+    Overweight#60-69  |   .9074255   .4516442    -0.20   0.845      .342098    2.406974
+      Overweight#70+  |   1.016398   .4907128     0.03   0.973     .3945546    2.618306
+     Obesity 1#60-69  |   .8668989   .4117491    -0.30   0.764     .3417237    2.199185
+       Obesity 1#70+  |   .6744317   .3230866    -0.82   0.411     .2637362    1.724671
+     Obesity 2#60-69  |   .8020836      .4287    -0.41   0.680      .281363    2.286506
+       Obesity 2#70+  |   .8310186   .4562373    -0.34   0.736     .2833302     2.43741
+     Obesity 3#60-69  |   .7472603   .4260549    -0.51   0.609     .2444299    2.284492
+       Obesity 3#70+  |   1.265706   .7209618     0.41   0.679     .4144554    3.865341
+                      |
+            RACE_ETHN |
+                   2  |   1.468461   .2208832     2.55   0.011     1.093518    1.971962
+                   3  |   1.595231   .2716978     2.74   0.006     1.142478    2.227405
+                   4  |   1.755701    .551353     1.79   0.073     .9487307    3.249065
+                      |
+         marital_2006 |
+                   2  |    1.12352    .360858     0.36   0.717     .5986698    2.108502
+                   3  |   1.137943   .3791469     0.39   0.698     .5922594    2.186397
+                   4  |    1.02689   .3402266     0.08   0.936     .5364213    1.965811
+                      |
+            education |
+                   2  |   .7997925   .2181945    -0.82   0.413     .4685519    1.365202
+                   3  |   .7946937   .1275832    -1.43   0.152     .5801556    1.088567
+                   4  |   .9817549   .1673271    -0.11   0.914     .7029542    1.371132
+                   5  |   .8166045   .1606377    -1.03   0.303      .555352    1.200757
+                      |
+       totwealth_2006 |
+                   2  |   1.071645   .1502553     0.49   0.622     .8141489     1.41058
+                   3  |   .9937203    .247277    -0.03   0.980     .6101708    1.618367
+                   4  |   2.595432    1.07599     2.30   0.021     1.151666     5.84915
+                   5  |   1.47e-14   1.20e-07    -0.00   1.000            0           .
+                      |
+         smoking_2006 |
+                   2  |   .8607282   .1055495    -1.22   0.221     .6768381    1.094579
+                   3  |   1.190636   .1946687     1.07   0.286     .8641868    1.640402
+                      |
+         alcohol_2006 |
+                   2  |    .982572   .1337815    -0.13   0.897      .752436    1.283096
+                   3  |   .6787456   .1166549    -2.25   0.024     .4846324    .9506085
+                   4  |   .7929776   .1759794    -1.05   0.296      .513287    1.225072
+                      |
+      physic_act_2006 |
+                   2  |   .9825749   .1646755    -0.10   0.916     .7074697    1.364657
+                   3  |   .9241188   .1339961    -0.54   0.586      .695512    1.227866
+---------------------------------------------------------------------------------------
+
+. testparm i.bmi5_2006#i.agecat_2006
+
+ ( 1)  2.bmi5_2006#2.agecat_2006 = 0
+ ( 2)  2.bmi5_2006#3.agecat_2006 = 0
+ ( 3)  3.bmi5_2006#2.agecat_2006 = 0
+ ( 4)  3.bmi5_2006#3.agecat_2006 = 0
+ ( 5)  4.bmi5_2006#2.agecat_2006 = 0
+ ( 6)  4.bmi5_2006#3.agecat_2006 = 0
+ ( 7)  5.bmi5_2006#2.agecat_2006 = 0
+ ( 8)  5.bmi5_2006#3.agecat_2006 = 0
+
+           chi2(  8) =    3.76
+         Prob > chi2 =    0.8782
+
+. putexcel A`row' = "Age group" B`row' = (r(df)) C`row' = (r(chi2)) D`row' = (r(p))
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+
+. local ++row
+
+. stcox ib1.bmi5_2006##i.RACE_ETHN c.r9agey_e i.marital_2006 i.education ///
+>     i.totwealth_2006 i.smoking_2006 i.alcohol_2006 i.physic_act_2006
+
+         Failure _d: fail_diabetes==1
+   Analysis time _t: (exit_date-origin)/365.25
+             Origin: time start_date
+  Enter on or after: time start_date
+        ID variable: HHIDPN
+
+Iteration 0:  Log likelihood = -2817.7126
+Iteration 1:  Log likelihood = -2742.0869
+Iteration 2:  Log likelihood = -2729.6871
+Iteration 3:  Log likelihood = -2729.4397
+Iteration 4:  Log likelihood = -2729.4046
+Iteration 5:  Log likelihood = -2729.3918
+Iteration 6:  Log likelihood = -2729.3871
+Iteration 7:  Log likelihood = -2729.3854
+Iteration 8:  Log likelihood = -2729.3848
+Iteration 9:  Log likelihood = -2729.3845
+Iteration 10: Log likelihood = -2729.3844
+Iteration 11: Log likelihood = -2729.3844
+Iteration 12: Log likelihood = -2729.3844
+Iteration 13: Log likelihood = -2729.3844
+Iteration 14: Log likelihood = -2729.3844
+Iteration 15: Log likelihood = -2729.3844
+Iteration 16: Log likelihood = -2729.3844
+Iteration 17: Log likelihood = -2729.3844
+Iteration 18: Log likelihood = -2729.3844
+Iteration 19: Log likelihood = -2729.3844
+Iteration 20: Log likelihood = -2729.3844
+Iteration 21: Log likelihood = -2729.3844
+Iteration 22: Log likelihood = -2729.3844
+Iteration 23: Log likelihood = -2729.3844
+Iteration 24: Log likelihood = -2729.3844
+Iteration 25: Log likelihood = -2729.3844
+Iteration 26: Log likelihood = -2729.3844
+Iteration 27: Log likelihood = -2729.3844
+Iteration 28: Log likelihood = -2729.3844
+Iteration 29: Log likelihood = -2729.3844
+Iteration 30: Log likelihood = -2729.3844
+Refining estimates:
+Iteration 0:  Log likelihood = -2729.3844
+Iteration 1:  Log likelihood = -2729.3844
+Iteration 2:  Log likelihood = -2729.3844
+Iteration 3:  Log likelihood = -2729.3844
+
+Cox regression with Breslow method for ties
+
+No. of subjects =       2,885                           Number of obs =  2,885
+No. of failures =         356
+Time at risk    = 40,050.4695
+                                                        LR chi2(38)   = 176.66
+Log likelihood = -2729.3844                             Prob > chi2   = 0.0000
+
+-------------------------------------------------------------------------------------
+                 _t | Haz. ratio   Std. err.      z    P>|z|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+          bmi5_2006 |
+        Overweight  |   2.155663   .4763536     3.48   0.001     1.397926    3.324126
+         Obesity 1  |   3.707826   .8204768     5.92   0.000     2.403054    5.721044
+         Obesity 2  |   3.928904   1.005534     5.35   0.000     2.379147    6.488161
+         Obesity 3  |   4.988905   1.369019     5.86   0.000     2.913564    8.542517
+                    |
+          RACE_ETHN |
+                 2  |   1.726391   .7785885     1.21   0.226     .7132701    4.178537
+                 3  |   1.440245   .8774615     0.60   0.549     .4363612    4.753641
+                 4  |   2.429281   1.485038     1.45   0.147     .7330466    8.050517
+                    |
+bmi5_2006#RACE_ETHN |
+      Overweight#2  |   .7413901   .4174588    -0.53   0.595     .2458985     2.23531
+      Overweight#3  |   1.181437   .7778305     0.25   0.800     .3250869    4.293602
+      Overweight#4  |    .783088   .6246633    -0.31   0.759     .1639886    3.739449
+       Obesity 1#2  |   1.152793   .5762307     0.28   0.776     .4327854    3.070646
+       Obesity 1#3  |   1.141844   .7491431     0.20   0.840      .315609    4.131089
+       Obesity 1#4  |   .4769405   .4498333    -0.78   0.432     .0751002    3.028916
+       Obesity 2#2  |   .5003971   .2932882    -1.18   0.237     .1586413    1.578386
+       Obesity 2#3  |   1.244097   .9360888     0.29   0.772     .2847012    5.436495
+       Obesity 2#4  |   .6723095   .6398343    -0.42   0.677      .104108    4.341645
+       Obesity 3#2  |   .6292539   .3671827    -0.79   0.427     .2005082    1.974785
+       Obesity 3#3  |   .5699561   .5446287    -0.59   0.556     .0875921    3.708666
+       Obesity 3#4  |   6.20e-16   2.98e-08    -0.00   1.000            0           .
+                    |
+           r9agey_e |   .9767834   .0064054    -3.58   0.000     .9643095    .9894187
+                    |
+       marital_2006 |
+                 2  |   1.093242   .3519916     0.28   0.782     .5816404     2.05484
+                 3  |   1.109663   .3704955     0.31   0.755     .5767543    2.134967
+                 4  |   1.017112   .3387685     0.05   0.959     .5294922    1.953789
+                    |
+          education |
+                 2  |   .8099985   .2219952    -0.77   0.442     .4733654    1.386028
+                 3  |   .8046903   .1297679    -1.35   0.178     .5866246    1.103818
+                 4  |   .9866018   .1686165    -0.08   0.937     .7057748     1.37917
+                 5  |   .8247341   .1631625    -0.97   0.330     .5596483    1.215382
+                    |
+     totwealth_2006 |
+                 2  |    1.06827   .1499322     0.47   0.638     .8113613    1.406525
+                 3  |   .9665659   .2408457    -0.14   0.891     .5931054    1.575183
+                 4  |   2.566177   1.061397     2.28   0.023      1.14083    5.772346
+                 5  |   5.27e-15   7.69e-08    -0.00   1.000            0           .
+                    |
+       smoking_2006 |
+                 2  |   .8653408   .1057827    -1.18   0.237     .6809777    1.099617
+                 3  |   1.148773   .1888215     0.84   0.399     .8323843    1.585421
+                    |
+       alcohol_2006 |
+                 2  |   .9697066   .1319681    -0.23   0.821     .7426766    1.266138
+                 3  |   .6637811   .1142034    -2.38   0.017      .473779    .9299808
+                 4  |   .7978959   .1773409    -1.02   0.310     .5161281    1.233488
+                    |
+    physic_act_2006 |
+                 2  |   .9696946    .161649    -0.18   0.854     .6994213    1.344408
+                 3  |   .9166979   .1327043    -0.60   0.548     .6902452    1.217444
+-------------------------------------------------------------------------------------
+
+. testparm i.bmi5_2006#i.RACE_ETHN
+
+ ( 1)  2.bmi5_2006#2.RACE_ETHN = 0
+ ( 2)  2.bmi5_2006#3.RACE_ETHN = 0
+ ( 3)  2.bmi5_2006#4.RACE_ETHN = 0
+ ( 4)  3.bmi5_2006#2.RACE_ETHN = 0
+ ( 5)  3.bmi5_2006#3.RACE_ETHN = 0
+ ( 6)  3.bmi5_2006#4.RACE_ETHN = 0
+ ( 7)  4.bmi5_2006#2.RACE_ETHN = 0
+ ( 8)  4.bmi5_2006#3.RACE_ETHN = 0
+ ( 9)  4.bmi5_2006#4.RACE_ETHN = 0
+ (10)  5.bmi5_2006#2.RACE_ETHN = 0
+ (11)  5.bmi5_2006#3.RACE_ETHN = 0
+ (12)  5.bmi5_2006#4.RACE_ETHN = 0
+
+           chi2( 12) =    6.71
+         Prob > chi2 =    0.8759
+
+. putexcel A`row' = "Race/ethnicity" B`row' = (r(df)) C`row' = (r(chi2)) D`row' = (r(p))
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+
+. 
+. ********************************************************************************
+. ** 12. TABLE 6: FULLY ADJUSTED STRATIFIED COX MODELS FOR BMI-SPECIFIC WC
+. ********************************************************************************
+. 
+. open_section_log TABLE6

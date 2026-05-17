@@ -1,0 +1,69 @@
+
+. sts graph, by(bmi_wc10_2006) failure ///
+>     title("HRS women: Incident diabetes by BMI-specific waist circumference category", size(small)) ///
+>     ytitle("Cumulative incidence of diabetes") ///
+>     xtitle("Years since 2006 baseline") xlabel(0(2)14) xscale(range(0 14)) ///
+>     yscale(range(0 0.5) noextend) ylabel(0(0.1)0.5, format(%3.1f)) ///
+>     risktable(0(2)14, size(vsmall)) ///
+>     legend(cols(1) size(vsmall) position(3) ring(1) region(lstyle(none))) ///
+>     graphregion(margin(large)) plotregion(margin(medium))
+
+        Failure _d: fail_diabetes==1
+  Analysis time _t: fu_yrs
+       ID variable: HHIDPN
+
+. graph save "$outdir\Figure3_HRS_Women_KM_BMIWC_diabetes.gph", replace
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\Figure3_HRS_Women_KM_BMIWC_di
+> abetes.gph saved
+
+. graph export "$outdir\Figure3_HRS_Women_KM_BMIWC_diabetes.png", replace width(2800)
+file
+    D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\Figure3_HRS_Women_KM_BMIWC_d
+    > iabetes.png saved as PNG format
+
+. graph export "$outdir\Figure3_HRS_Women_KM_BMIWC_diabetes.tif", replace width(2800)
+file
+    D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\Figure3_HRS_Women_KM_BMIWC_d
+    > iabetes.tif saved as TIFF format
+
+. sts test bmi_wc10_2006, logrank
+
+        Failure _d: fail_diabetes==1
+  Analysis time _t: fu_yrs
+       ID variable: HHIDPN
+
+Equality of survivor functions
+Log-rank test
+
+                    |  Observed       Expected
+bmi_wc1~2006        |    events         events
+--------------------+-------------------------
+     Normal, WC <80 |        12          40.93
+    Normal, WC >=80 |        30          68.57
+ Overweight, WC <90 |        29          37.46
+Overweight, WC >=90 |        72          81.40
+ Obesity 1, WC <105 |        66          45.38
+Obesity 1, WC >=105 |        57          30.01
+ Obesity 2, WC <115 |        30          20.73
+Obesity 2, WC >=115 |        21          12.17
+ Obesity 3, WC <115 |         9           5.68
+Obesity 3, WC >=115 |        30          13.68
+--------------------+-------------------------
+              Total |       356         356.00
+
+                              chi2(9) = 113.51
+                              Pr>chi2 = 0.0000
+
+. putexcel set "$xlsx", sheet("Figure3_Logrank_BMIWC") modify
+
+. putexcel A1="Figure 3 log-rank test: BMI-specific waist circumference category. Full output is in HRS_FIGURE3.txt."
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+
+. 
+. ********************************************************************************
+. ** 15. SURVEY-WEIGHTED COX MODELS AS DESIGN-BASED SENSITIVITY CHECKS
+. ** Unadjusted and fully adjusted only.
+. ********************************************************************************
+. 
+. open_section_log SURVEY_WEIGHTED_COX

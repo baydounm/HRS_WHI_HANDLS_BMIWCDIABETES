@@ -1,0 +1,322 @@
+
+. 
+. putexcel set "$xlsx", sheet("README") replace
+note: file will be replaced when the first putexcel command is issued.
+
+. putexcel A1="HRS supplementary datasheet: Tables 1 through 6"
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+
+. putexcel A2="Women-only HRS validation analysis, 2006 baseline, incident diabetes follow-up through 2020."
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+
+. putexcel A3="Cox models are limited to unadjusted and fully adjusted models, matching the requested simplified manuscript format."
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+
+. putexcel A4="Fully adjusted covariates: age, race/ethnicity, marital status, education, wealth, smoking, alcohol consumption, and phys
+> ical activity."
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+
+. putexcel A5="Tables 5 and 6 use fully adjusted models overall and within age and race/ethnicity strata; interaction tests are provided
+>  in the same sheets."
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+
+. 
+. putexcel set "$xlsx", sheet("Table1") modify
+
+. putexcel A1="Table 1. Demographic and lifestyle characteristics by body mass index in the HRS analytic sample"
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+
+. putexcel A2="Survey design: secu/stratum with 2006 EFTF weight kwgtr."
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+
+. putexcel A4="Characteristic" B4="Normal" C4="Overweight" D4="Obesity 1" E4="Obesity 2" F4="Obesity 3" G4="Design-based P value"
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+
+. 
+. local row = 5
+
+. 
+. putexcel A`row' = "Unweighted N"
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+
+. 
+. local cols B C D E F
+
+. 
+. forvalues b = 1/5 {
+  2.     quietly count if bmi5_2006 == `b'
+  3.     local col : word `b' of `cols'
+  4.     putexcel `col'`row' = (r(N))
+  5. }
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+
+. 
+. local ++row
+
+. 
+. svy: mean r9agey_e, over(bmi5_2006)
+(running mean on estimation sample)
+
+Survey: Mean estimation
+
+Number of strata =  56                    Number of obs   =      2,885
+Number of PSUs   = 112                    Population size = 11,845,125
+                                          Design df       =         56
+
+----------------------------------------------------------------------
+                     |             Linearized
+                     |       Mean   std. err.     [95% conf. interval]
+---------------------+------------------------------------------------
+c.r9agey_e@bmi5_2006 |
+             Normal  |   70.02596    .354693      69.31542    70.73649
+         Overweight  |   68.19652   .3465011      67.50239    68.89064
+          Obesity 1  |   66.15886   .4229201      65.31165    67.00607
+          Obesity 2  |   64.83952   .5540206      63.72968    65.94935
+          Obesity 3  |   63.12366   .6346185      61.85237    64.39496
+----------------------------------------------------------------------
+
+. putexcel A`row'="Age, years: mean by BMI category shown in log" G`row'="See log for svy: mean test output"
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+
+. local ++row
+
+. 
+. foreach v in agecat_2006 RACE_ETHN marital_2006 education totwealth_2006 smoking_2006 alcohol_2006 physic_act_2006 {
+  2.     putexcel A`row'="`v': weighted row percentages and Pearson test shown in log"
+  3.     capture noisily svy: tab bmi5_2006 `v', row percent pearson
+  4.     local ++row
+  5. }
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+(running tabulate on estimation sample)
+
+Number of strata =  56                            Number of obs   =      2,885
+Number of PSUs   = 112                            Population size = 11,845,125
+                                                  Design df       =         56
+
+--------------------------------------
+BMI       |
+category  |     Age group in 2006     
+in 2006   | 50-59  60-69    70+  Total
+----------+---------------------------
+   Normal | 20.18  32.27  47.56    100
+ Overweig | 24.37  33.91  41.72    100
+  Obesity | 27.22  40.27  32.51    100
+  Obesity |  36.1  35.43  28.47    100
+  Obesity | 42.47  35.36  22.17    100
+          | 
+    Total | 25.94  35.07  38.99    100
+--------------------------------------
+Key: Row percentage
+
+  Pearson:
+    Uncorrected   chi2(8)         =   92.3790
+    Design-based  F(6.30, 352.82) =    9.0481     P = 0.0000
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+(running tabulate on estimation sample)
+
+Number of strata =  56                            Number of obs   =      2,885
+Number of PSUs   = 112                            Population size = 11,845,125
+                                                  Design df       =         56
+
+---------------------------------------------
+BMI       |
+category  |             RACE_ETHN            
+in 2006   |     1      2      3      4  Total
+----------+----------------------------------
+   Normal | 87.82  5.553  4.242  2.382    100
+ Overweig | 82.72  4.816  10.02  2.448    100
+  Obesity | 77.85   10.3  10.41   1.44    100
+  Obesity | 79.85  11.92  5.235  2.993    100
+  Obesity | 79.78  15.13  5.083      0    100
+          | 
+    Total | 82.69  7.523  7.674  2.116    100
+---------------------------------------------
+Key: Row percentage
+
+  Pearson:
+    Uncorrected   chi2(12)        =   81.4707
+    Design-based  F(8.98, 503.00) =    4.9524     P = 0.0000
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+(running tabulate on estimation sample)
+
+Number of strata =  56                            Number of obs   =      2,885
+Number of PSUs   = 112                            Population size = 11,845,125
+                                                  Design df       =         56
+
+---------------------------------------------
+BMI       |
+category  |           marital_2006           
+in 2006   |     1      2      3      4  Total
+----------+----------------------------------
+   Normal | 2.167  57.17  15.19  25.47    100
+ Overweig | 3.194  62.06  13.77  20.98    100
+  Obesity | 3.369  57.77  19.87  18.98    100
+  Obesity | 4.068  56.76  17.75  21.43    100
+  Obesity | 3.808  58.98  20.11   17.1    100
+          | 
+    Total | 3.051  58.99  16.28  21.67    100
+---------------------------------------------
+Key: Row percentage
+
+  Pearson:
+    Uncorrected   chi2(12)        =   26.9516
+    Design-based  F(8.98, 502.74) =    1.5675     P = 0.1222
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+(running tabulate on estimation sample)
+
+Number of strata =  56                            Number of obs   =      2,885
+Number of PSUs   = 112                            Population size = 11,845,125
+                                                  Design df       =         56
+
+----------------------------------------------------
+BMI       |
+category  |                education                
+in 2006   |     1      2      3      4      5  Total
+----------+-----------------------------------------
+   Normal | 14.08  2.873  33.32   22.9  26.82    100
+ Overweig | 18.41  4.405  33.31  24.17   19.7    100
+  Obesity | 18.18  4.236  33.75  25.13   18.7    100
+  Obesity | 16.27  5.044  34.48  25.09  19.11    100
+  Obesity |  11.4  7.907  31.97  31.44  17.29    100
+          | 
+    Total | 16.49  4.183  33.45  24.52  21.37    100
+----------------------------------------------------
+Key: Row percentage
+
+  Pearson:
+    Uncorrected   chi2(16)        =   40.0661
+    Design-based  F(11.16, 625.02)=    1.6186     P = 0.0881
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+(running tabulate on estimation sample)
+
+Number of strata =  56                            Number of obs   =      2,885
+Number of PSUs   = 112                            Population size = 11,845,125
+                                                  Design df       =         56
+
+----------------------------------------------------
+BMI       |
+category  |              totwealth_2006             
+in 2006   |     1      2      3      4      5  Total
+----------+-----------------------------------------
+   Normal | 33.48  54.03  9.366  2.409  .7141    100
+ Overweig | 28.39  58.95  10.56  1.861  .2443    100
+  Obesity | 32.08  58.25    8.2  .9007  .5698    100
+  Obesity | 30.72   60.6  8.495  .1842      0    100
+  Obesity | 32.36  64.35  3.284      0      0    100
+          | 
+    Total | 31.15  57.83  9.069  1.541  .4166    100
+----------------------------------------------------
+Key: Row percentage
+
+  Pearson:
+    Uncorrected   chi2(16)        =   34.2273
+    Design-based  F(10.73, 600.98)=    1.3713     P = 0.1841
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+(running tabulate on estimation sample)
+
+Number of strata =  56                            Number of obs   =      2,885
+Number of PSUs   = 112                            Population size = 11,845,125
+                                                  Design df       =         56
+
+--------------------------------------
+BMI       |
+category  |        smoking_2006       
+in 2006   |     1      2      3  Total
+----------+---------------------------
+   Normal | 50.02  31.51  18.47    100
+ Overweig | 52.43   34.5  13.07    100
+  Obesity | 49.35  40.18  10.47    100
+  Obesity | 58.47  32.05  9.477    100
+  Obesity | 50.89  41.13  7.974    100
+          | 
+    Total | 51.53  35.03  13.44    100
+--------------------------------------
+Key: Row percentage
+
+  Pearson:
+    Uncorrected   chi2(8)         =   41.2030
+    Design-based  F(6.22, 348.11) =    3.8402     P = 0.0009
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+(running tabulate on estimation sample)
+
+Number of strata =  56                            Number of obs   =      2,885
+Number of PSUs   = 112                            Population size = 11,845,125
+                                                  Design df       =         56
+
+---------------------------------------------
+BMI       |
+category  |           alcohol_2006           
+in 2006   |     1      2      3      4  Total
+----------+----------------------------------
+   Normal | 44.81  19.85  18.89  16.45    100
+ Overweig | 48.64  19.37  20.11  11.88    100
+  Obesity | 51.99  21.42  17.43  9.153    100
+  Obesity |  55.8   23.2  18.41  2.591    100
+  Obesity | 49.66  34.92  10.64  4.781    100
+          | 
+    Total | 49.01  21.23  18.45  11.32    100
+---------------------------------------------
+Key: Row percentage
+
+  Pearson:
+    Uncorrected   chi2(12)        =   79.1557
+    Design-based  F(9.00, 503.91) =    4.1427     P = 0.0000
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+(running tabulate on estimation sample)
+
+Number of strata =  56                            Number of obs   =      2,885
+Number of PSUs   = 112                            Population size = 11,845,125
+                                                  Design df       =         56
+
+--------------------------------------
+BMI       |
+category  |      physic_act_2006      
+in 2006   |     1      2      3  Total
+----------+---------------------------
+   Normal | 12.79  19.25  67.96    100
+ Overweig | 14.37  21.84  63.79    100
+  Obesity | 18.69  23.72  57.59    100
+  Obesity | 20.82     29  50.18    100
+  Obesity | 26.81  23.31  49.87    100
+          | 
+    Total |  16.2  22.27  61.53    100
+--------------------------------------
+Key: Row percentage
+
+  Pearson:
+    Uncorrected   chi2(8)         =   53.0831
+    Design-based  F(6.76, 378.72) =    4.2806     P = 0.0002
+
+. 
+. ********************************************************************************
+. ** 8. TABLE 2: INCIDENT CASES, PERSON-TIME, AND EXACT POISSON RATES
+. ********************************************************************************
+. 
+. open_section_log TABLE2

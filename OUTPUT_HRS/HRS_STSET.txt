@@ -1,0 +1,98 @@
+
+. 
+. stset exit_date, failure(fail_diabetes==1) ///
+>     origin(time start_date) enter(time start_date) ///
+>     id(HHIDPN) scale(365.25)
+
+Survival-time data settings
+
+           ID variable: HHIDPN
+         Failure event: fail_diabetes==1
+Observed time interval: (exit_date[_n-1], exit_date]
+     Enter on or after: time start_date
+     Exit on or before: failure
+     Time for analysis: (time-origin)/365.25
+                Origin: time start_date
+
+--------------------------------------------------------------------------
+      2,885  total observations
+          0  exclusions
+--------------------------------------------------------------------------
+      2,885  observations remaining, representing
+      2,885  subjects
+        356  failures in single-failure-per-subject data
+  40,050.47  total analysis time at risk and under observation
+                                                At risk from t =         0
+                                     Earliest observed entry t =         0
+                                          Last observed exit t =  15.00068
+
+. stsum
+
+         Failure _d: fail_diabetes==1
+   Analysis time _t: (exit_date-origin)/365.25
+             Origin: time start_date
+  Enter on or after: time start_date
+        ID variable: HHIDPN
+
+         |               Incidence     Number of   |------ Survival time -----|
+         | Time at risk       rate      subjects        25%       50%       75%
+---------+---------------------------------------------------------------------
+   Total |  40,050.4695   .0088888          2885          .         .         .
+
+. 
+. ********************************************************************************
+. ** 10. TABLES 3-4: COX MODELS AND HARRELL'S C-STATISTICS
+. ** Only unadjusted and fully adjusted models are exported.
+. ********************************************************************************
+. 
+. capture program drop make_cox_table
+
+. program define make_cox_table
+  1.     syntax, EXPOSURE(name) SHEET(string)
+  2. 
+.     tempfile results
+  3.     postfile handle str24 table str30 model str40 exposure str100 category ///
+>         double HR LCL UCL P CSTAT N_EVENTS N_SUBJECTS using `results', replace
+  4. 
+.     foreach model in unadjusted full {
+  5.         if "`model'" == "unadjusted" local covars ""
+  6.         if "`model'" == "full"       local covars "$COV_FULL"
+  7. 
+.         quietly stcox ib1.`exposure' `covars'
+  8.         estimates store `sheet'_`model'
+  9.         quietly estat concordance
+ 10.         capture local cstat = r(C)
+ 11.         if _rc local cstat = .
+ 12.         local nevents = e(N_fail)
+ 13.         local nsubjects = e(N)
+ 14. 
+.         levelsof `exposure' if e(sample), local(levels)
+ 15.         foreach lev of local levels {
+ 16.             if `lev' != 1 {
+ 17.                 capture quietly lincom `lev'.`exposure', hr
+ 18.                 if _rc == 0 {
+ 19.                     local vl : value label `exposure'
+ 20.                     if "`vl'" == "" local cat "`lev'"
+ 21.                     else local cat : label `vl' `lev'
+ 22.                     post handle ("`sheet'") ("`model'") ("`exposure'") ("`cat'") ///
+>                         (r(estimate)) (r(lb)) (r(ub)) (r(p)) (`cstat') (`nevents') (`nsubjects')
+ 23.                 }
+ 24.             }
+ 25.         }
+ 26. 
+.         di "=============================================================="
+ 27.         di "`sheet' | `model' | exposure = `exposure'"
+ 28.         estat concordance
+ 29.         capture noisily estat phtest, detail
+ 30.         estat ic
+ 31.     }
+ 32.     postclose handle
+ 33. 
+.     preserve
+ 34.         use `results', clear
+ 35.         export excel using "$xlsx", sheet("`sheet'", replace) firstrow(variables)
+ 36.     restore
+ 37. end
+
+. 
+. open_section_log TABLE3

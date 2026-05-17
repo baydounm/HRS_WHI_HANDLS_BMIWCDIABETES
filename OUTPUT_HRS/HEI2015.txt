@@ -1,0 +1,689 @@
+
+. 
+. ************************************************HEI 2015********************
+. 
+. **STEP A: RUN STATA SCRIPTS FOR LEGUMES:
+. 
+. use "D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS\HCNS13_R_NT",clear
+
+. save "D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS\HEI2015", replace
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS\HEI2015.dta saved
+
+. 
+. 
+. **STEP A: RUN STATA SCRIPTS FOR LEGUMES:
+. 
+. capture drop m_mpf m_egg m_nutsd m_soy m_fish_hi m_fish_lo legumes kcal v_total v_drkgr 
+
+.   
+. gen m_mpf=C6D_FF_13+C6E_FF_13+C6F_FF_13+C6G_FF_13+C6H_FF_13+C6I_FF_13+C6J_FF_13+C6K_FF_13+C6L_FF_13+C6M_FF_13+C6N_FF_13+C6O_FF_13+C6P_
+> FF_13+C6R_FF_13+C6S_FF_13+C6T_FF_13+C6U_FF_13+C6V_FF_13+C6W_FF_13+C6Q_FF_13
+
+. gen m_egg=C6A_FF_13+C6B_FF_13+C6C_FF_13
+
+. gen m_nutsd=C9V_FF_13+C9W_FF_13+C9X_FF_13+C9F_FF_13 
+
+. gen m_soy=C5E_FF_13+C3D_FF_13
+
+. gen m_fish_hi=C6V_FF_13+C6S_FF_13
+
+. gen m_fish_lo=C6T_FF_13+C6U_FF_13+C6W_FF_13
+
+. gen legumes=C5N_FF_13+C5P_FF_13 
+
+. gen kcal=CALOR_SUM
+
+. gen v_total = C5A_FF_13+C5B_FF_13+C5C_FF_13+C5D_FF_13+ C5F_FF_13+C5G_FF_13+C5H_FF_13+C5I_FF_13+C5J_FF_13+C5K_FF_13+C5L_FF_13+C5M_FF_13
+> +C5N_FF_13+C5O_FF_13+C5P_FF_13+C5Q_FF_13+C5R_FF_13+ C5S_FF_13+C5T_FF_13+C5U_FF_13+C5V_FF_13+C5W_FF_13+C5X_FF_13+C5Y_FF_13+C5Z_FF_13+C5
+> AA_FF_13+C5AB_FF_13 
+
+. gen v_drkgr=C5T_FF_13+C5U_FF_13+C5V_FF_13
+
+.  
+. 
+. 
+. 
+. **pf_mps_total: m_mpf
+. **pf_eggs: m_egg 
+. **pf_nutsds: m_nutsd
+. *pf_soy: m_soy
+. 
+. /* This program calculates legumes that get counted as meat and those that get
+> counted as veggies*/
+. /** This macro gets called into the program that calculates HEI 2015 scores**/
+. 
+. capture drop allmeat 
+
+. capture drop seaplant
+
+. capture drop mbmax
+
+. capture drop meatleg
+
+. capture drop legume_added_*
+
+. capture drop meatveg
+
+. capture drop extrmeat
+
+. capture drop extrleg
+
+. 
+. 
+. gen allmeat=m_mpf+m_egg+m_nutsd+m_soy
+
+. gen seaplant=m_fish_hi+m_fish_lo+m_nutsd + m_soy
+
+. gen mbmax=2.5*(kcal/1000)
+
+. gen needmeat=mbmax-allmeat if allmeat<mbmax
+(394 missing values generated)
+
+. gen meatleg=4*legumes
+
+. /*Needs more meat, and all beans go to meat*/
+. gen all2meat=1 if meatleg<=needmeat /*folks who don't meet meat max and the amount
+> of legumes they consume is less than the amount they need to reach mbmax*/
+(994 missing values generated)
+
+. foreach var in allmeat seaplant {
+  2. gen legume_added_`var'=`var'+meatleg if all2meat==1
+  3. }
+(994 missing values generated)
+(994 missing values generated)
+
+. foreach var in v_total v_drkgr {
+  2. gen legume_added_`var'=`var' if all2meat==1
+  3. }
+(994 missing values generated)
+(994 missing values generated)
+
+. /*Needs more meat, and some beans go to meat, some go to veggies*/
+. gen meatveg=1 if meatleg>needmeat
+(7,041 missing values generated)
+
+. gen extrmeat=meatleg-needmeat
+(394 missing values generated)
+
+. gen extrleg=extrmeat/4
+(394 missing values generated)
+
+. foreach var in allmeat seaplant {
+  2. replace legume_added_`var'=`var'+needmeat if meatveg==1 /*folks who don't meet
+> meat max and the amount of legumes they consume is more than the amount they need
+> to reach mbmax--rest go to veggies*/
+  3. }
+(994 real changes made)
+(994 real changes made)
+
+. foreach var in v_total v_drkgr {
+  2. replace legume_added_`var'=`var'+extrleg if meatveg==1
+  3. }
+(994 real changes made)
+(994 real changes made)
+
+. gen all2veg=1 if allmeat>=mbmax /*Folks who meet the meat requirement so all
+> legumes count as veggies*/
+(7,641 missing values generated)
+
+. foreach var in allmeat seaplant {
+  2. replace legume_added_`var'=`var' if all2veg==1
+  3. }
+(372 real changes made)
+(372 real changes made)
+
+. foreach var in v_total v_drkgr {
+  2. replace legume_added_`var'=`var'+legumes if all2veg==1
+  3. }
+(372 real changes made)
+(372 real changes made)
+
+. 
+. save "D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS\HEI2015", replace
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS\HEI2015.dta saved
+
+. 
+. 
+. **STEP B: RUN STATA SCRIPT FOR HEI-2015
+. 
+. 
+. use "D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS\HEI2015", clear
+
+. 
+. capture drop monofat 
+
+. capture drop polyfat 
+
+. capture drop add_sug 
+
+. capture drop discfat_sol 
+
+. capture drop alcohol 
+
+. capture drop f_total 
+
+. capture drop frtjuice 
+
+. capture drop wholefrt 
+
+. capture drop g_whl 
+
+. capture drop d_total 
+
+. capture drop Satfat 
+
+. capture drop sodi 
+
+. capture drop g_nwhl 
+
+. capture drop sfat 
+
+. 
+. gen monofat=MONFAT_SUM
+
+. gen polyfat=POLY_SUM
+
+. gen add_sug=C9AH_FF_13 
+
+. gen discfat_sol=ADDFAT_SOL_SUM
+
+. gen alcohol=ALCO_SUM
+
+. gen f_total= C4A_FF_13+C4B_FF_13+C4C_FF_13+C4D_FF_13+C4E_FF_13+C4F_FF_13+C4G_FF_13+C4H_FF_13+C4I_FF_13+C4J_FF_13+C4K_FF_13+C4L_FF_13+C
+> 4M_FF_13+C4N_FF_13+C4O_FF_13+C4P_FF_13+C4Q_FF_13+C4R_FF_13+ C4S_FF_13+C4C_FF_13 
+
+. gen frtjuice=C4I_FF_13+C4K_FF_13+C4L_FF_13+C4N_FF_13+C4O_FF_13
+
+. gen wholefrt=f_total-frtjuice
+
+. gen g_whl=C7B_FF_13+C7F_FF_13+C7G_FF_13+C7J_FF_13+C7SA_FF_13+C9AB_FF_13+C9AC_FF_13+C9AD_FF_13+C9G_FF_13+C9H_FF_13 
+
+. gen d_total= C3A_FF_13+C3B_FF_13+C3C_FF_13 + C3E_FF_13+C3G_FF_13+C3H_FF_13+C3I_FF_13+C3J_FF_13+C3L_FF_13+ C3M_FF_13+C3N_FF_13+C3D_FF_1
+> 3 
+
+. gen Satfat=SATFAT_SUM 
+
+. gen sodi=SODIUM_SUM
+
+. gen g_nwhl=C7A_FF_13+C7C_FF_13+C7E_FF_13+C7H_FF_13+C7I_FF_13+C7K_FF_13+C7L_FF_13+C7M_FF_13+C7N_FF_13+C7O_FF_13+C7SB_FF_13+C7T_FF_13+C9
+> J_FF_13+C9K_FF_13+C9L_FF_13+C9M_FF_13+C9N_FF_13+C9O_FF_13+C9P_FF_13+C9Q_FF_13+C9R_FF_13+C9S_FF_13+C9T_FF_13+C9U_FF_13+C9Y_FF_13+C9Z_FF
+> _13+C9AA_FF_13
+
+. gen sfat=SATFAT_SUM 
+
+. gen SatFat=SATFAT_SUM
+
+. 
+. save "D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS\HEI2015", replace
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS\HEI2015.dta saved
+
+. 
+. capture drop monopoly
+
+. capture drop addsugc
+
+. capture drop solfatc
+
+. capture drop maxalcgr
+
+. capture drop ethcal
+
+. capture drop exalccal
+
+. capture drop emptycal10
+
+. capture drop vegden
+
+. capture drop hei*
+
+. capture drop grbnden
+
+. capture drop frtden
+
+. capture drop wholefrt
+
+. capture drop whfrden
+
+. capture drop wgrnden
+
+. capture drop monopoly
+
+. capture drop farmin
+
+. capture drop farmax
+
+. capture drop sodden
+
+. capture drop sodmin
+
+. capture drop sodmax
+
+. capture drop rgden
+
+. capture drop rgmin
+
+. capture drop rgmax
+
+. capture drop sofa*
+
+. capture drop addedsugar_perc 
+
+. capture drop addsugmin 
+
+. capture dorp addsugmax 
+
+. capture drop heix12_addedsugar
+
+. capture drop saturatedfat_perc 
+
+. capture drop saturatedfatmin 
+
+. capture drop saturatedfatmax 
+
+. capture drop heix13_saturatedfat
+
+. 
+. 
+. 
+. /*This do file creates HEI-2015 component densities and scores*/
+. gen monopoly=monofat+polyfat
+
+. gen addsugc=16*add_sug
+
+. gen solfatc=9*discfat_sol
+
+. gen maxalcgr=13*(kcal/1000)
+
+. gen ethcal=7*alcohol
+
+. gen exalccal=7*(alcohol-maxalcgr)
+
+. replace exalccal=0 if alcohol<=maxalcgr
+(7,439 real changes made)
+
+. gen emptycal10=addsugc+solfatc+exalccal
+
+. gen vegden=legume_added_v_total/(kcal/1000)
+
+. gen heix1_totalveg=5*(vegden/1.1)
+
+. replace heix1_totalveg=5 if heix1_totalveg>5
+(5,586 real changes made)
+
+. replace heix1_totalveg=0 if heix1_totalveg<0
+(0 real changes made)
+
+. gen grbnden=legume_added_v_drkgr/(kcal/1000)
+
+. gen heix2_greens_and_bean=5*(grbnden/.2)
+
+. replace heix2_greens_and_bean=5 if heix2_greens_and_bean>5
+(1,318 real changes made)
+
+. replace heix2_greens_and_bean=0 if heix2_greens_and_bean<0
+(0 real changes made)
+
+. gen frtden=f_total/(kcal/1000)
+
+. gen heix3_totalfruit=5*(frtden/.8)
+
+. replace heix3_totalfruit=5 if heix3_totalfruit>5
+(5,125 real changes made)
+
+. replace heix3_totalfruit=0 if heix3_totalfruit<0
+(0 real changes made)
+
+. gen wholefrt=f_total-frtjuice
+
+. gen whfrden=wholefrt/(kcal/1000)
+
+. gen heix4_wholefruit=5*(whfrden/.4)
+
+. replace heix4_wholefruit=5 if heix4_wholefruit>5
+(6,077 real changes made)
+
+. replace heix4_wholefruit=0 if heix4_wholefruit<0
+(0 real changes made)
+
+. gen wgrnden=g_whl/(kcal/1000)
+
+. gen heix5_wholegrain=10*(wgrnden/1.5)
+
+. replace heix5_wholegrain=10 if heix5_wholegrain>10
+(486 real changes made)
+
+. replace heix5_wholegrain=0 if heix5_wholegrain<0
+(0 real changes made)
+
+. gen dairyden=d_total/(kcal/1000)
+
+. gen heix6_totaldairy=10*(dairyden/1.3)
+
+. replace heix6_totaldairy=10 if heix6_totaldairy>10
+(2,257 real changes made)
+
+. replace heix6_totaldairy=0 if heix6_totaldairy<0
+(0 real changes made)
+
+. gen meatden=legume_added_allmeat/(kcal/1000)
+
+. gen heix7_totprot=5*(meatden/2.5)
+
+. replace heix7_totprot=5 if heix7_totprot>5
+(409 real changes made)
+
+. replace heix7_totprot=0 if heix7_totprot<0
+(0 real changes made)
+
+. gen seaplden=legume_added_seaplant/(kcal/1000)
+
+. gen heix8_seaplant_prot=5*(seaplden/.8)
+
+. replace heix8_seaplant_prot=5 if heix8_seaplant_prot>5
+(3,766 real changes made)
+
+. replace heix8_seaplant_prot=0 if heix8_seaplant_prot<0
+(0 real changes made)
+
+. gen faratio=monopoly/SatFat if SatFat>0
+
+. 
+. 
+. 
+. 
+. gen farmin=1.2
+
+. gen farmax=2.5
+
+. gen heix9_fattyacid=0 if SatFat==0 & monopoly==0
+(8,035 missing values generated)
+
+. replace heix9_fattyacid=10 if SatFat==0 & monopoly>0
+(0 real changes made)
+
+. replace heix9_fattyacid=10 if faratio>=farmax & faratio !=.
+(383 real changes made)
+
+. replace heix9_fattyacid=0 if faratio<=farmin & faratio !=.
+(536 real changes made)
+
+. replace heix9_fattyacid=10*((faratio-farmin)/(farmax-farmin)) if faratio !=.
+(8,033 real changes made)
+
+. gen sodden=sodi/kcal
+
+. gen sodmin=1.1
+
+. gen sodmax=2
+
+. gen heix10_sodium=10
+
+. replace heix10_sodium=0 if sodden>=sodmax
+(99 real changes made)
+
+. replace heix10_sodium=10-(10*(sodden-sodmin)/(sodmax-sodmin))
+(8,035 real changes made)
+
+. gen rgden=g_nwhl/(kcal/1000)
+
+. gen rgmin=1.8
+
+. gen rgmax=4.3
+
+. gen heix11_refinedgrain=10
+
+. replace heix11_refinedgrain=0 if rgden>=rgmax
+(59 real changes made)
+
+. replace heix11_refinedgrain=10-(10*(rgden-rgmin)/(rgmax-rgmin))
+(8,035 real changes made)
+
+. 
+. 
+. gen addedsugar_perc=100*add_sug*16/kcal
+
+. gen addsugmin=6.5
+
+. gen addsugmax=26
+
+. gen heix12_addedsugar=0 if addedsugar_perc>=addsugmax
+(8,035 missing values generated)
+
+. replace heix12_addedsugar=10 if addedsugar_perc<=addsugmin
+(7,950 real changes made)
+
+. replace heix12_addedsugar=10-(10*(addedsugar_perc-addsugmin)/(addsugmax-addsugmin))
+(8,035 real changes made)
+
+. 
+. 
+. 
+. gen saturatedfat_perc=100*sfat*9/kcal
+
+. gen saturatedfatmin=7
+
+. gen saturatedfatmax=15
+
+. gen heix13_saturatedfat=0 if saturatedfat_perc>=saturatedfatmax
+(7,483 missing values generated)
+
+. replace heix13_saturatedfat=10 if saturatedfat_perc<=saturatedfatmin
+(386 real changes made)
+
+. replace heix13_saturatedfat=10-(10*(saturatedfat_perc-saturatedfatmin)/(saturatedfatmax-saturatedfatmin))
+(8,035 real changes made)
+
+. 
+. 
+. foreach var in vegden grbnden frtden whfrden wgrnden dairyden meatden seaplden faratio sodden rgden {
+  2. replace `var'=0 if `var'==.
+  3. }
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+
+. 
+. 
+. 
+. 
+. foreach var in 1_totalveg 2_greens_and_bean 3_totalfruit 4_wholefruit 5_wholegrain 6_totaldairy 7_totprot 8_seaplant 9_fattyacid 10_so
+> dium 11_refinedgrain 12_addedsugar 13_saturatedfat {
+  2. replace heix`var'=0 if kcal==0
+  3. }
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+
+. foreach var in 1_totalveg 2_greens_and_bean 3_totalfruit 4_wholefruit 5_wholegrain 6_totaldairy 7_totprot 8_seaplant 9_fattyacid 10_so
+> dium 11_refinedgrain 12_addedsugar 13_saturatedfat {
+  2. replace heix`var'=0 if heix`var'<0 & heix`var'!=.
+  3. }
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(536 real changes made)
+(99 real changes made)
+(59 real changes made)
+(0 real changes made)
+(552 real changes made)
+
+. foreach var in 9_fattyacid 10_sodium 11_refinedgrain {
+  2. replace heix`var'=10 if heix`var'>10 & heix`var'!=.
+  3. }
+(381 real changes made)
+(3,033 real changes made)
+(6,072 real changes made)
+
+. replace heix12_addedsugar=10 if heix12_addedsugar>10 & heix12_addedsugar!=.
+(7,950 real changes made)
+
+. replace heix13_saturatedfat=10 if heix13_saturatedfat>10 & heix13_saturatedfat!=.
+(386 real changes made)
+
+. 
+. 
+. gen hei2015_total_score=heix1_totalveg+heix2_greens_and_bean+heix3_totalfruit+ ///
+> heix4_wholefruit+heix5_wholegrain+heix6_totaldairy+heix7_totprot+heix8_seaplant ///
+> +heix9_fattyacid+heix10_sodium+heix11_refinedgrain+heix12_addedsugar+heix13_saturatedfat
+
+. 
+. 
+. 
+. label var hei2015_total_score "total hei-2015 score"
+
+. label var heix1_totalveg "hei-2015 component 1 total vegetables"
+
+. label var heix2_greens_and_bean "hei-2015 component 2 greens and beans"
+
+. label var heix3_totalfruit "hei-2015 component 3 total fruit"
+
+. label var heix4_wholefruit "hei-2015 component 4 whole fruit"
+
+. label var heix5_wholegrain "hei-2015 component 5 whole grains"
+
+. label var heix6_totaldairy "hei-2015 component 6 dairy"
+
+. label var heix7_totprot "hei-2015 component 7 total protein foods"
+
+. 
+. label var heix8_seaplant_prot "hei-2015 component 8 seafood and plant protein"
+
+. label var heix9_fattyacid "hei-2015 component 9 fatty acid ratio"
+
+. label var heix10_sodium "hei-2015 component 10 sodium"
+
+. label var heix11_refinedgrain "hei-2015 component 11 refined grains"
+
+. label var heix12_addedsugar "hei-2015 component 12 added sugar"
+
+. label var heix13_saturatedfat "hei-2015 component 13 saturated fat"
+
+. 
+. label var vegden "density of mped total vegetables per 1000 kcal"
+
+. label var grbnden "density of mped of dark green veg and beans per 1000 kcal"
+
+. label var frtden "density of mped total fruit per 1000 kcal"
+
+. label var whfrden "density of mped whole fruit per 1000 kcal"
+
+. label var wgrnden "density of mped of whole grain per 1000 kcal"
+
+. label var dairyden "density of mped of dairy per 1000 kcal"
+
+. label var meatden "density of mped total meat/protein per 1000 kcal"
+
+. label var seaplden "denstiy of mped of seafood and plant protein per 1000 kcal"
+
+. label var faratio "fatty acid ratio"
+
+. label var sodden "density of sodium per 1000 kcal"
+
+. label var rgden "density of mped of refined grains per 1000 kcal"
+
+. label var addedsugar_perc "percent of calories from added sugar"
+
+. label var saturatedfat_perc "percent of calories from saturated fat"
+
+. 
+. save "D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS\HEI2015", replace
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS\HEI2015.dta saved
+
+. 
+. destring HHID, replace
+HHID already numeric; no replace
+
+. destring PN, replace
+PN already numeric; no replace
+
+. 
+. capture drop HHIDPN
+
+. egen HHIDPN = concat(HHID PN)
+
+. 
+. destring HHIDPN, replace
+HHIDPN: all characters numeric; replaced as long
+
+. sort HHIDPN
+
+. 
+. su hei*
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+heix1_tota~g |      8,035    4.507179    .9693247          0          5
+heix2_gree~n |      8,035    2.053718    1.772617          0          5
+heix3_tota~t |      8,035    4.231375    1.288237          0          5
+heix4_whol~t |      8,035    4.486523    1.113324          0          5
+heix5_whol~n |      8,035    3.733695    2.788688          0         10
+-------------+---------------------------------------------------------
+heix6_tota~y |      8,035    6.553085     3.09519          0         10
+heix7_totp~t |      8,035    3.534695     1.09549   .2585717          5
+heix8_seap~t |      8,035    3.952218    1.328987          0          5
+heix9_fatt~d |      8,035    3.828908    2.704964          0         10
+heix10_sod~m |      8,035     8.30476    2.260873          0         10
+-------------+---------------------------------------------------------
+heix11_ref~n |      8,035    9.336968    1.695476          0         10
+heix12_add~r |      8,035    9.986824     .186767   2.958389         10
+heix13_sat~t |      8,035    4.870704    2.804475          0         10
+hei2015_to~e |      8,035    69.38065    9.749512   28.78203   97.20311
+
+. 
+. save "D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS\HEI2015", replace
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS\HEI2015.dta saved
+
+. capture drop _merge
+
+. sort HHIDPN
+
+. save "D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS\HEI2015", replace
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS\HEI2015.dta saved
+
+. 
+. use "D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS\HEI2015",clear
+
+. su HHIDPN,det
+
+                           HHIDPN
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%      1227340            320
+ 5%      1864620        1000330
+10%      3191940        1001340       Obs               8,035
+25%      5608330        1005920       Sum of wgt.       8,035
+
+50%     2.02e+07                      Mean           3.12e+07
+                        Largest       Std. dev.      2.87e+07
+75%     5.22e+07       9.23e+07
+90%     9.02e+07       9.53e+07       Variance       8.24e+14
+95%     9.11e+07       9.58e+07       Skewness       .7659859
+99%     9.19e+07       9.60e+07       Kurtosis       2.429306
+
+. 
+. 
+. 
+. capture log close

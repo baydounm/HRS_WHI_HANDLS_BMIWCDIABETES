@@ -1,0 +1,80 @@
+
+. 
+. putexcel set "$xlsx", sheet("Table2") modify
+
+. putexcel A1="Table 2. Incident diabetes cases, person-years, and incidence rates by BMI and BMI-specific waist circumference categorie
+> s"
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+
+. putexcel A3="Exposure" B3="Category" C3="Cases" D3="N" E3="Person-years" F3="Rate per 10,000 PY" G3="Lower 95% CI" H3="Upper 95% CI"
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+
+. 
+. local row=4
+
+. foreach exp in bmi5_2006 bmi_wc10_2006 {
+  2.     levelsof `exp', local(levels)
+  3.     foreach lev of local levels {
+  4.         quietly count if `exp'==`lev'
+  5.         local n = r(N)
+  6.         quietly count if `exp'==`lev' & fail_diabetes==1
+  7.         local cases = r(N)
+  8.         quietly summarize fu_yrs if `exp'==`lev', meanonly
+  9.         local py = r(sum)
+ 10.         local rate = (`cases'/`py')*10000
+ 11.         if `cases' == 0 {
+ 12.             local ll = 0
+ 13.             local ul = (0.5*invchi2(2*(`cases'+1), .975)/`py')*10000
+ 14.         }
+ 15.         else {
+ 16.             local ll = (0.5*invchi2(2*`cases', .025)/`py')*10000
+ 17.             local ul = (0.5*invchi2(2*(`cases'+1), .975)/`py')*10000
+ 18.         }
+ 19.         local vl : value label `exp'
+ 20.         local cat : label `vl' `lev'
+ 21.         putexcel A`row'="`exp'" B`row'="`cat'" C`row'=`cases' D`row'=`n' ///
+>             E`row'=`py' F`row'=`rate' G`row'=`ll' H`row'=`ul'
+ 22.         local ++row
+ 23.     }
+ 24. }
+1 2 3 4 5
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+1 2 3 4 5 6 7 8 9 10
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+
+. 
+. ********************************************************************************
+. ** 9. STSET FOR COX MODELS
+. ********************************************************************************
+. 
+. open_section_log STSET

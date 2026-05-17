@@ -1,0 +1,718 @@
+
+. 
+. 
+. ****************************************STEP 7: MERGE WITH EPIGENETIC,  DIETARY DATA AND FRAILTY DATA ********************************
+> ***********************************************
+. 
+. use "D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS\HRS_TLHEIFRAILEPIGENMORT.dta"
+> ,clear
+
+. capture rename hhidpn HHIDPN
+
+. sort HHIDPN
+
+. capture drop _merge
+
+. su HHIDPN
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+      HHIDPN |     46,851    3.11e+07    2.53e+07        110   9.60e+07
+
+. 
+. save "D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS\HRS_TLHEIFRAILEPIGENMORT.dta
+> ", replace 
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS\HRS_TLHEIFRAILEPIGENMORT.dta
+    saved
+
+. 
+. 
+. use "D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS\EPICLOCKA_R.dta",clear
+
+. destring HHID, replace
+HHID already numeric; no replace
+
+. destring PN, replace
+PN already numeric; no replace
+
+. 
+. capture drop HHIDPN
+
+. egen HHIDPN = concat(HHID PN)
+
+. 
+. destring HHIDPN, replace
+HHIDPN: all characters numeric; replaced as long
+
+. sort HHIDPN
+
+. 
+. su HHIDPN
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+      HHIDPN |      4,018    3.34e+07    2.95e+07    1003810   9.53e+07
+
+. 
+. **    Variable |        Obs        Mean    Std. dev.       Min        Max
+. **-------------+---------------------------------------------------------
+. **      HHIDPN |      4,018    3.34e+07    2.95e+07    1003810   9.53e+07
+. 
+. 
+. capture drop _merge
+
+. save "D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS\EPICLOCKA_R.dta",replace
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS\EPICLOCKA_R.dta saved
+
+. 
+. 
+. 
+. 
+. use "D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS\HRS_FRAILTY",clear
+
+. sort HHIDPN
+
+. capture drop _merge
+
+. save "D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS\HRS_FRAILTY",replace
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS\HRS_FRAILTY.dta saved
+
+. 
+. 
+. **Start the merging here**
+. use "D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS\HRS_TLHEIFRAILEPIGENMORT.dta"
+> , replace 
+
+. merge HHIDPN using "D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS\EPICLOCKA_R.dt
+> a"
+(you are using old merge syntax; see [D] merge for new syntax)
+
+. tab _merge
+
+     _merge |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 |     42,833       91.42       91.42
+          3 |      4,018        8.58      100.00
+------------+-----------------------------------
+      Total |     46,851      100.00
+
+. capture drop _merge
+
+. sort HHIDPN
+
+. merge HHIDPN using "D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS\HEI2015"
+(you are using old merge syntax; see [D] merge for new syntax)
+
+. tab _merge
+
+     _merge |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 |     38,818       82.85       82.85
+          2 |          2        0.00       82.85
+          3 |      8,033       17.15      100.00
+------------+-----------------------------------
+      Total |     46,853      100.00
+
+. capture drop _merge
+
+. sort HHIDPN
+
+. merge HHIDPN using "D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS\HRS_FRAILTY"
+(you are using old merge syntax; see [D] merge for new syntax)
+
+. tab _merge
+
+     _merge |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 |     25,943       55.37       55.37
+          2 |          2        0.00       55.37
+          3 |     20,910       44.63      100.00
+------------+-----------------------------------
+      Total |     46,855      100.00
+
+. capture drop _merge
+
+. sort HHIDPN
+
+. save "D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS\HRS_TLHEIFRAILEPIGENMORTfin.
+> dta", replace
+file
+    D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS\HRS_TLHEIFRAILEPIGENMORTfin.dt
+    > a saved
+
+. 
+. 
+. 
+. **STEP 8: DEMENTIA PROBABILITY DATA 2006 THROUGH 2016**
+. 
+. cd "D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS\"
+D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS
+
+. 
+. use HRS_TLHEIFRAILEPIGENMORTfin,clear
+
+. 
+. sort HHIDPN
+
+. capture drop _merge
+
+. 
+. use Dementia_prob2000_2016,clear
+(HRSDEMENTIA_2021_1109)
+
+. 
+. destring HHID, replace
+HHID already numeric; no replace
+
+. destring PN, replace
+PN already numeric; no replace
+
+. 
+. capture rename HHID-HRS_year,lower
+
+. save, replace
+file Dementia_prob2000_2016.dta saved
+
+. 
+. capture drop HHID PN
+
+. gen HHID=hhid
+
+. gen PN=pn
+
+. destring HHID, replace
+HHID already numeric; no replace
+
+. destring PN, replace
+PN already numeric; no replace
+
+. 
+. 
+. capture drop HHIDPN
+
+. egen HHIDPN = concat(HHID PN)
+
+. 
+. destring HHIDPN, replace
+HHIDPN: all characters numeric; replaced as long
+
+. sort HHIDPN
+
+. 
+. 
+. 
+. sort HHIDPN
+
+. save, replace
+file Dementia_prob2000_2016.dta saved
+
+. 
+. **HRS year 2016**
+. keep if hrs_year==2016
+(63,104 observations deleted)
+
+. 
+. save Dementia_prob2016, replace
+file Dementia_prob2016.dta saved
+
+. 
+. 
+. use HRS_TLHEIFRAILEPIGENMORTfin,clear
+
+. sort HHIDPN
+
+. capture drop _merge
+
+. save, replace
+file HRS_TLHEIFRAILEPIGENMORTfin.dta saved
+
+. 
+. 
+. merge HHIDPN using Dementia_prob2016
+(you are using old merge syntax; see [D] merge for new syntax)
+(note: variable hhid was long in the using data, but will be str6 now)
+(note: variable pn was byte in the using data, but will be str3 now)
+(variable HHID was long, now double to accommodate using data's values)
+(variable PN was byte, now float to accommodate using data's values)
+
+. 
+. save HRS_TLHEIFRAILEPIGENMORTfinLONG, replace
+file HRS_TLHEIFRAILEPIGENMORTfinLONG.dta saved
+
+. 
+. 
+. ***STEP 9: NEUROPATHOLOGICAL MARKERS
+. 
+. *-----------------------------*
+. * Prepare HCAPBIOPILOTA_R
+. *-----------------------------*
+. use HCAPBIOPILOTA_R, clear
+
+. 
+. capture drop _merge
+
+. 
+. * Ensure source IDs are numeric
+. capture confirm numeric variable hhid
+
+. if _rc {
+.     destring hhid, replace force
+hhid: all characters numeric; replaced as long
+. }
+
+. 
+. capture confirm numeric variable pn
+
+. if _rc {
+.     destring pn, replace force
+pn: all characters numeric; replaced as byte
+. }
+
+. 
+. * Recreate numeric HHIDPN using HRS convention
+. capture drop HHIDPN
+
+. gen double HHIDPN = hhid*100 + pn
+
+. 
+. sort HHIDPN
+
+. save HCAPBIOPILOTA_Rfin, replace
+file HCAPBIOPILOTA_Rfin.dta saved
+
+. 
+. 
+. *------------------------------------------*
+. * Prepare HRS_TLHEIFRAILEPIGENMORTfinLONG
+. *------------------------------------------*
+. use HRS_TLHEIFRAILEPIGENMORTfinLONG, clear
+
+. 
+. capture drop _merge
+
+. 
+. * If lowercase variables exist, use them
+. capture confirm variable hhid
+
+. if !_rc {
+.     capture confirm numeric variable hhid
+.     if _rc destring hhid, replace force
+hhid: all characters numeric; replaced as long
+(4 missing values generated)
+. }
+
+. 
+. capture confirm variable pn
+
+. if !_rc {
+.     capture confirm numeric variable pn
+.     if _rc destring pn, replace force
+pn: all characters numeric; replaced as byte
+(5 missing values generated)
+. }
+
+. 
+. * If uppercase variables exist instead, use them
+. capture confirm variable HHID
+
+. if !_rc {
+.     capture confirm numeric variable HHID
+.     if _rc destring HHID, replace force
+. }
+
+. 
+. capture confirm variable PN
+
+. if !_rc {
+.     capture confirm numeric variable PN
+.     if _rc destring PN, replace force
+. }
+
+. 
+. capture drop HHIDPN
+
+. 
+. * Create HHIDPN from whichever pair exists
+. capture confirm variable hhid
+
+. if !_rc {
+.     gen double HHIDPN = hhid*100 + pn
+(5 missing values generated)
+. }
+
+. else {
+.     gen double HHIDPN = HHID*100 + PN
+. }
+
+. 
+. sort HHIDPN
+
+. save HRS_TLHEIFRAILEPIGENMORTfinLONG, replace
+file HRS_TLHEIFRAILEPIGENMORTfinLONG.dta saved
+
+. 
+. 
+. *-----------------------------*
+. * Merge files
+. *-----------------------------*
+. use HRS_TLHEIFRAILEPIGENMORTfinLONG, clear
+
+. 
+. capture drop dup
+
+. duplicates tag HHIDPN, gen(dup)
+
+Duplicates in terms of HHIDPN
+
+. keep if dup==0 
+(5 observations deleted)
+
+. 
+. save HRS_TLHEIFRAILEPIGENMORTfinLONG,replace
+file HRS_TLHEIFRAILEPIGENMORTfinLONG.dta saved
+
+. 
+. merge 1:1 HHIDPN using HCAPBIOPILOTA_Rfin
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                        42,311
+        from master                    42,311  (_merge==1)
+        from using                          0  (_merge==2)
+
+    Matched                             4,539  (_merge==3)
+    -----------------------------------------
+
+. 
+. 
+. 
+. tab _merge
+
+   Matching result from |
+                  merge |      Freq.     Percent        Cum.
+------------------------+-----------------------------------
+        Master only (1) |     42,311       90.31       90.31
+            Matched (3) |      4,539        9.69      100.00
+------------------------+-----------------------------------
+                  Total |     46,850      100.00
+
+. capture drop _merge
+
+. 
+. 
+. save HRS_TLHEIFRAILEPIGENMORTfinLONG,replace
+file HRS_TLHEIFRAILEPIGENMORTfinLONG.dta saved
+
+. 
+. 
+. 
+. ***STEP 10: GENERATE LN-TRANSFORMED BIOMARKERS, REMOVE OUTLIERS****
+. use HRS_TLHEIFRAILEPIGENMORTfinLONG,clear
+
+. 
+. 
+. **REMOVE OUTLIERS****
+. 
+. * List of variables
+. local vars pNfL pGFAP pAbeta42 pAB42_40_ratio pptau181 pGDF_15 puPAR pTSH pT3 pT4
+
+. 
+. foreach v of local vars {
+  2.     
+.     quietly summarize `v', detail
+  3.     
+.     local p25 = r(p25)
+  4.     local p75 = r(p75)
+  5.     local iqr = `p75' - `p25'
+  6.     
+.     local lb = `p25' - 1.5*`iqr'
+  7.     local ub = `p75' + 1.5*`iqr'
+  8.     
+.     * Set outliers to missing
+.     replace `v' = . if `v' < `lb' | `v' > `ub'
+  9. }
+(303 real changes made, 303 to missing)
+(224 real changes made, 224 to missing)
+(153 real changes made, 153 to missing)
+(149 real changes made, 149 to missing)
+(315 real changes made, 315 to missing)
+(278 real changes made, 278 to missing)
+(148 real changes made, 148 to missing)
+(62 real changes made, 62 to missing)
+(20 real changes made, 20 to missing)
+(44 real changes made, 44 to missing)
+
+. 
+. 
+. local vars pNfL pGFAP pAbeta42 pAB42_40_ratio pptau181 pGDF_15 puPAR pTSH pT3 pT4
+
+. 
+. foreach v of local vars {
+  2.     capture drop Ln`v'
+  3.     gen Ln`v' = . 
+  4.     replace Ln`v' = ln(`v') if `v' > 0
+  5. }
+(46,850 missing values generated)
+(4,160 real changes made)
+(46,850 missing values generated)
+(4,239 real changes made)
+(46,850 missing values generated)
+(4,310 real changes made)
+(46,850 missing values generated)
+(4,313 real changes made)
+(46,850 missing values generated)
+(4,115 real changes made)
+(46,850 missing values generated)
+(4,238 real changes made)
+(46,850 missing values generated)
+(4,368 real changes made)
+(46,850 missing values generated)
+(960 real changes made)
+(46,850 missing values generated)
+(1,013 real changes made)
+(46,850 missing values generated)
+(988 real changes made)
+
+. 
+. save HRS_TLHEIFRAILEPIGENMORTfinLONG_final,replace
+file HRS_TLHEIFRAILEPIGENMORTfinLONG_final.dta saved
+
+. 
+. su Ln*
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+      LnpNfL |      4,160    2.791908    .5725769   .5306283   3.975936
+     LnpGFAP |      4,239    4.352588    .5828833   1.740466   5.494802
+  LnpAbeta42 |      4,310    1.565979    .3859528  -.5236558   2.277264
+LnpAB42_40~o |      4,313   -2.757922    .1925419  -3.435729  -2.328222
+  Lnpptau181 |      4,115    .3423545    .5987236  -3.575551   1.480825
+-------------+---------------------------------------------------------
+   LnpGDF_15 |      4,238    7.167451    .4613964   5.517453   8.182838
+     LnpuPAR |      4,368    8.036849    .2833913   6.726233   8.678972
+      LnpTSH |        960    .6364962    .6192421  -2.995732   1.717395
+       LnpT3 |      1,013     4.62464    .1911801   3.951244   5.049856
+       LnpT4 |        988    .1785749    .1489101  -.2876821   .5364934
+
+. 
+. histogram LnpNfL
+(bin=36, start=.53062826, width=.095703)
+
+. graph save HIST_NFL.gph,replace
+file HIST_NFL.gph saved
+
+. 
+. histogram LnpGDF_15
+(bin=36, start=5.5174527, width=.07403849)
+
+. graph save HIST_pGDF_15.gph,replace
+file HIST_pGDF_15.gph saved
+
+. 
+. 
+. histogram LnpGFAP
+(bin=36, start=1.7404661, width=.10428712)
+
+. graph save HIST_GFAP.gph,replace
+file HIST_GFAP.gph saved
+
+. 
+. save HRS_TLHEIFRAILEPIGENMORTfinLONG_final,replace
+file HRS_TLHEIFRAILEPIGENMORTfinLONG_final.dta saved
+
+. 
+. ***STEP 11: LANGA-WEIR DATASET**
+. 
+. *-----------------------------*
+. * Prepare cogfinalimp_9522wide
+. *-----------------------------*
+. use cogfinalimp_9522wide, clear
+
+. 
+. capture drop _merge
+
+. 
+. * Ensure source IDs are numeric
+. capture confirm numeric variable hhid
+
+. if _rc {
+.     destring hhid, replace force
+. }
+
+. 
+. capture confirm numeric variable pn
+
+. if _rc {
+.     destring pn, replace force
+. }
+
+. 
+. * Recreate numeric HHIDPN using HRS convention
+. capture drop HHIDPN
+
+. gen double HHIDPN = hhid*100 + pn
+
+. 
+. * Check for duplicates in cogfinalimp_9522wide by HHIDPN
+. capture drop dup
+
+. duplicates tag HHIDPN, gen(dup)
+
+Duplicates in terms of HHIDPN
+
+. tab dup
+
+        dup |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |     42,890      100.00      100.00
+------------+-----------------------------------
+      Total |     42,890      100.00
+
+. 
+. * Keep only unique HHIDPN values before merge
+. keep if dup==0 | missing(dup)
+(0 observations deleted)
+
+. drop dup
+
+. 
+. sort HHIDPN
+
+. save cogfinalimp_9522wide_fin, replace
+file cogfinalimp_9522wide_fin.dta saved
+
+. 
+. 
+. *------------------------------------------*
+. * Prepare HRS_TLHEIFRAILEPIGENMORTfinLONG_final
+. *------------------------------------------*
+. use HRS_TLHEIFRAILEPIGENMORTfinLONG_final, clear
+
+. 
+. capture drop _merge
+
+. 
+. * If lowercase variables exist, use them
+. capture confirm variable hhid
+
+. if !_rc {
+.     capture confirm numeric variable hhid
+.     if _rc destring hhid, replace force
+. }
+
+. 
+. capture confirm variable pn
+
+. if !_rc {
+.     capture confirm numeric variable pn
+.     if _rc destring pn, replace force
+. }
+
+. 
+. * If uppercase variables exist instead, use them
+. capture confirm variable HHID
+
+. if !_rc {
+.     capture confirm numeric variable HHID
+.     if _rc destring HHID, replace force
+. }
+
+. 
+. capture confirm variable PN
+
+. if !_rc {
+.     capture confirm numeric variable PN
+.     if _rc destring PN, replace force
+. }
+
+. 
+. capture drop HHIDPN
+
+. 
+. * Create HHIDPN from whichever pair exists
+. capture confirm variable hhid
+
+. if !_rc {
+.     gen double HHIDPN = hhid*100 + pn
+. }
+
+. else {
+.     gen double HHIDPN = HHID*100 + PN
+. }
+
+. 
+. sort HHIDPN
+
+. save HRS_TLHEIFRAILEPIGENMORTfinLONG_final, replace
+file HRS_TLHEIFRAILEPIGENMORTfinLONG_final.dta saved
+
+. 
+. 
+. *-----------------------------*
+. * Deduplicate master file
+. *-----------------------------*
+. use HRS_TLHEIFRAILEPIGENMORTfinLONG_final, clear
+
+. 
+. capture drop dup
+
+. duplicates tag HHIDPN, gen(dup)
+
+Duplicates in terms of HHIDPN
+
+. tab dup
+
+        dup |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |     46,850      100.00      100.00
+------------+-----------------------------------
+      Total |     46,850      100.00
+
+. 
+. keep if dup==0 | missing(dup)
+(0 observations deleted)
+
+. drop dup
+
+. 
+. sort HHIDPN
+
+. save HRS_TLHEIFRAILEPIGENMORTfinLONG_final, replace
+file HRS_TLHEIFRAILEPIGENMORTfinLONG_final.dta saved
+
+. 
+. 
+. *-----------------------------*
+. * Merge files
+. *-----------------------------*
+. merge 1:1 HHIDPN using cogfinalimp_9522wide_fin
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                         3,976
+        from master                     3,968  (_merge==1)
+        from using                          8  (_merge==2)
+
+    Matched                            42,882  (_merge==3)
+    -----------------------------------------
+
+. 
+. tab _merge
+
+   Matching result from |
+                  merge |      Freq.     Percent        Cum.
+------------------------+-----------------------------------
+        Master only (1) |      3,968        8.47        8.47
+         Using only (2) |          8        0.02        8.49
+            Matched (3) |     42,882       91.51      100.00
+------------------------+-----------------------------------
+                  Total |     46,858      100.00
+
+. capture drop _merge
+
+. 
+. save HRS_TLHEIFRAILEPIGENMORTfinLONG_final, replace
+file HRS_TLHEIFRAILEPIGENMORTfinLONG_final.dta saved
+
+. 
+. capture log close

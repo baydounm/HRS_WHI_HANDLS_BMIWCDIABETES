@@ -1,0 +1,362 @@
+
+. post_stratified_cox, exposure(bmi_wc10_2006) sheet("Table6_BMIWC_Full_Strat")
+(file C:\Users\baydounm\AppData\Local\Temp\ST_8b40_000001.tmp not found)
+1 2 3 4 5 6 7 8 9 10
+1 2 3 4 5 6 7 8 9 10
+1 2 3 4 5 6 7 8 9 10
+1 2 3 4 5 6 7 8 9 10
+1 2 3 4
+1 2 3 4 5 6 7 8 9 10
+1 2 3 4 5 6 7 8 9 10
+1 2 3 4 5 6 7 8 9 10
+1 2 3 4 5 6 7 8 10
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+
+. 
+. putexcel set "$xlsx", sheet("Table6_Interactions") modify
+
+. putexcel A1="Table 6 interaction tests: fully adjusted BMI-specific waist circumference models"
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+
+. putexcel A3="Modifier" B3="df" C3="Wald chi-square" D3="P value"
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+
+. local row=4
+
+. stcox ib1.bmi_wc10_2006##i.agecat_2006 i.RACE_ETHN i.marital_2006 i.education ///
+>     i.totwealth_2006 i.smoking_2006 i.alcohol_2006 i.physic_act_2006
+
+         Failure _d: fail_diabetes==1
+   Analysis time _t: (exit_date-origin)/365.25
+             Origin: time start_date
+  Enter on or after: time start_date
+        ID variable: HHIDPN
+
+Iteration 0:  Log likelihood = -2817.7126
+Iteration 1:  Log likelihood = -2740.2199
+Iteration 2:  Log likelihood = -2723.5546
+Iteration 3:  Log likelihood = -2722.9997
+Iteration 4:  Log likelihood = -2722.9581
+Iteration 5:  Log likelihood = -2722.9441
+Iteration 6:  Log likelihood =  -2722.939
+Iteration 7:  Log likelihood = -2722.9371
+Iteration 8:  Log likelihood = -2722.9364
+Iteration 9:  Log likelihood = -2722.9361
+Iteration 10: Log likelihood =  -2722.936
+Iteration 11: Log likelihood =  -2722.936
+Iteration 12: Log likelihood =  -2722.936
+Iteration 13: Log likelihood =  -2722.936
+Iteration 14: Log likelihood =  -2722.936
+Iteration 15: Log likelihood =  -2722.936
+Iteration 16: Log likelihood =  -2722.936
+Iteration 17: Log likelihood =  -2722.936
+Iteration 18: Log likelihood =  -2722.936
+Iteration 19: Log likelihood =  -2722.936
+Iteration 20: Log likelihood =  -2722.936
+Iteration 21: Log likelihood =  -2722.936
+Iteration 22: Log likelihood =  -2722.936
+Iteration 23: Log likelihood =  -2722.936
+Iteration 24: Log likelihood =  -2722.936
+Iteration 25: Log likelihood =  -2722.936
+Iteration 26: Log likelihood =  -2722.936
+Iteration 27: Log likelihood =  -2722.936
+Iteration 28: Log likelihood =  -2722.936
+Iteration 29: Log likelihood =  -2722.936
+Iteration 30: Log likelihood =  -2722.936
+Iteration 31: Log likelihood =  -2722.936
+Refining estimates:
+Iteration 0:  Log likelihood =  -2722.936
+Iteration 1:  Log likelihood =  -2722.936
+
+Cox regression with Breslow method for ties
+
+No. of subjects =       2,885                           Number of obs =  2,885
+No. of failures =         356
+Time at risk    = 40,050.4695
+                                                        LR chi2(50)   = 189.55
+Log likelihood = -2722.936                              Prob > chi2   = 0.0000
+
+--------------------------------------------------------------------------------------------
+                        _t | Haz. ratio   Std. err.      z    P>|z|     [95% conf. interval]
+---------------------------+----------------------------------------------------------------
+             bmi_wc10_2006 |
+          Normal, WC >=80  |   .9544748    .643924    -0.07   0.945     .2543972    3.581101
+       Overweight, WC <90  |   2.379206   1.312015     1.57   0.116     .8073024    7.011774
+      Overweight, WC >=90  |   2.056509   1.074427     1.38   0.168     .7386162    5.725882
+       Obesity 1, WC <105  |   3.672927   1.865467     2.56   0.010     1.357344    9.938818
+      Obesity 1, WC >=105  |   6.530239   3.392378     3.61   0.000     2.359068    18.07664
+       Obesity 2, WC <115  |   2.885474   1.620535     1.89   0.059     .9597689    8.674961
+      Obesity 2, WC >=115  |   6.557753   3.704023     3.33   0.001     2.167554    19.83993
+       Obesity 3, WC <115  |   2.716553   1.998365     1.36   0.174     .6424701    11.48639
+      Obesity 3, WC >=115  |   5.573806   2.983672     3.21   0.001     1.952098    15.91483
+                           |
+               agecat_2006 |
+                    60-69  |   .8839715   .5606182    -0.19   0.846     .2550368    3.063893
+                      70+  |   .2725272   .2294747    -1.54   0.123     .0523211    1.419524
+                           |
+ bmi_wc10_2006#agecat_2006 |
+    Normal, WC >=80#60-69  |   1.535551   1.332632     0.49   0.621     .2802505      8.4136
+      Normal, WC >=80#70+  |   3.452883   3.484515     1.23   0.219     .4777299    24.95637
+ Overweight, WC <90#60-69  |    .957173   .7379192    -0.06   0.955     .2112363    4.337229
+   Overweight, WC <90#70+  |   1.749854   1.688094     0.58   0.562     .2641456    11.59206
+Overweight, WC >=90#60-69  |    1.30415   .9321065     0.37   0.710      .321332    5.292991
+  Overweight, WC >=90#70+  |   3.163887   2.833081     1.29   0.198     .5470391    18.29884
+ Obesity 1, WC <105#60-69  |   1.238317   .8649127     0.31   0.760     .3149946    4.868112
+   Obesity 1, WC <105#70+  |   2.040562   1.848257     0.79   0.431     .3457536    12.04295
+Obesity 1, WC >=105#60-69  |   .9395239   .6671927    -0.09   0.930     .2335804    3.779021
+  Obesity 1, WC >=105#70+  |   1.393344   1.271028     0.36   0.716     .2331204    8.327918
+ Obesity 2, WC <115#60-69  |   1.535136   1.168881     0.56   0.573     .3451648    6.827588
+   Obesity 2, WC <115#70+  |   2.472092   2.451311     0.91   0.361     .3540123    17.26278
+Obesity 2, WC >=115#60-69  |   .5361046   .4553865    -0.73   0.463     .1014398    2.833287
+  Obesity 2, WC >=115#70+  |   1.717784   1.684794     0.55   0.581     .2512548    11.74418
+ Obesity 3, WC <115#60-69  |   2.209103   2.140474     0.82   0.413     .3307184    14.75617
+   Obesity 3, WC <115#70+  |   2.032705   2.906623     0.50   0.620     .1232869    33.51444
+Obesity 3, WC >=115#60-69  |   .6772192   .5346994    -0.49   0.622     .1440993    3.182707
+  Obesity 3, WC >=115#70+  |   3.423687   3.218115     1.31   0.190      .542503    21.60658
+                           |
+                 RACE_ETHN |
+                        2  |   1.507399   .2273317     2.72   0.007     1.121651    2.025808
+                        3  |   1.576105   .2695699     2.66   0.008     1.127196    2.203793
+                        4  |   1.808982   .5713072     1.88   0.061     .9741156    3.359373
+                           |
+              marital_2006 |
+                        2  |   1.125092   .3629829     0.37   0.715     .5978178     2.11742
+                        3  |   1.142555   .3817395     0.40   0.690     .5935836    2.199239
+                        4  |   1.024846   .3413353     0.07   0.941     .5335279     1.96861
+                           |
+                 education |
+                        2  |   .7949039   .2174368    -0.84   0.401     .4650271    1.358786
+                        3  |   .7818637   .1261127    -1.53   0.127     .5699468    1.072575
+                        4  |   .9923127   .1693254    -0.05   0.964     .7102349    1.386421
+                        5  |   .8164814   .1611079    -1.03   0.304     .5546097    1.202002
+                           |
+            totwealth_2006 |
+                        2  |   1.070142   .1501986     0.48   0.629     .8127784       1.409
+                        3  |   .9910552   .2473327    -0.04   0.971     .6076699    1.616322
+                        4  |   2.867707   1.200638     2.52   0.012     1.262286    6.514962
+                        5  |   1.50e-14   1.21e-07    -0.00   1.000            0           .
+                           |
+              smoking_2006 |
+                        2  |   .8578393   .1053325    -1.25   0.212     .6743549    1.091248
+                        3  |   1.193042   .1968092     1.07   0.285     .8634518    1.648442
+                           |
+              alcohol_2006 |
+                        2  |   .9807601   .1336674    -0.14   0.887     .7508494     1.28107
+                        3  |   .6828435   .1175664    -2.22   0.027     .4872685    .9569166
+                        4  |   .8062385    .179752    -0.97   0.334     .5208191    1.248073
+                           |
+           physic_act_2006 |
+                        2  |   .9968367   .1681981    -0.02   0.985      .716142    1.387551
+                        3  |   .9474092   .1386003    -0.37   0.712      .711233    1.262011
+--------------------------------------------------------------------------------------------
+
+. testparm i.bmi_wc10_2006#i.agecat_2006
+
+ ( 1)  2.bmi_wc10_2006#2.agecat_2006 = 0
+ ( 2)  2.bmi_wc10_2006#3.agecat_2006 = 0
+ ( 3)  3.bmi_wc10_2006#2.agecat_2006 = 0
+ ( 4)  3.bmi_wc10_2006#3.agecat_2006 = 0
+ ( 5)  4.bmi_wc10_2006#2.agecat_2006 = 0
+ ( 6)  4.bmi_wc10_2006#3.agecat_2006 = 0
+ ( 7)  5.bmi_wc10_2006#2.agecat_2006 = 0
+ ( 8)  5.bmi_wc10_2006#3.agecat_2006 = 0
+ ( 9)  6.bmi_wc10_2006#2.agecat_2006 = 0
+ (10)  6.bmi_wc10_2006#3.agecat_2006 = 0
+ (11)  7.bmi_wc10_2006#2.agecat_2006 = 0
+ (12)  7.bmi_wc10_2006#3.agecat_2006 = 0
+ (13)  8.bmi_wc10_2006#2.agecat_2006 = 0
+ (14)  8.bmi_wc10_2006#3.agecat_2006 = 0
+ (15)  9.bmi_wc10_2006#2.agecat_2006 = 0
+ (16)  9.bmi_wc10_2006#3.agecat_2006 = 0
+ (17)  10.bmi_wc10_2006#2.agecat_2006 = 0
+ (18)  10.bmi_wc10_2006#3.agecat_2006 = 0
+
+           chi2( 18) =   12.34
+         Prob > chi2 =    0.8291
+
+. putexcel A`row' = "Age group" B`row' = (r(df)) C`row' = (r(chi2)) D`row' = (r(p))
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+
+. local ++row
+
+. stcox ib1.bmi_wc10_2006##i.RACE_ETHN c.r9agey_e i.marital_2006 i.education ///
+>     i.totwealth_2006 i.smoking_2006 i.alcohol_2006 i.physic_act_2006
+
+         Failure _d: fail_diabetes==1
+   Analysis time _t: (exit_date-origin)/365.25
+             Origin: time start_date
+  Enter on or after: time start_date
+        ID variable: HHIDPN
+
+note: 9.bmi_wc10_2006#4.RACE_ETHN identifies no observations in the sample.
+Iteration 0:  Log likelihood = -2817.7126
+Iteration 1:  Log likelihood = -2753.6898
+Iteration 2:  Log likelihood = -2716.3186
+Iteration 3:  Log likelihood = -2713.7093
+Iteration 4:  Log likelihood = -2713.5686
+Iteration 5:  Log likelihood = -2713.5533
+Iteration 6:  Log likelihood = -2713.5479
+Iteration 7:  Log likelihood = -2713.5459
+Iteration 8:  Log likelihood = -2713.5451
+Iteration 9:  Log likelihood = -2713.5449
+Iteration 10: Log likelihood = -2713.5448
+Iteration 11: Log likelihood = -2713.5447
+Iteration 12: Log likelihood = -2713.5447
+Iteration 13: Log likelihood = -2713.5447
+Iteration 14: Log likelihood = -2713.5447
+Iteration 15: Log likelihood = -2713.5447
+Iteration 16: Log likelihood = -2713.5447
+Iteration 17: Log likelihood = -2713.5447
+Iteration 18: Log likelihood = -2713.5447
+Iteration 19: Log likelihood = -2713.5447
+Iteration 20: Log likelihood = -2713.5447
+Iteration 21: Log likelihood = -2713.5447
+Iteration 22: Log likelihood = -2713.5447
+Iteration 23: Log likelihood = -2713.5447
+Iteration 24: Log likelihood = -2713.5447
+Iteration 25: Log likelihood = -2713.5447
+Iteration 26: Log likelihood = -2713.5447
+Iteration 27: Log likelihood = -2713.5447
+Iteration 28: Log likelihood = -2713.5447
+Iteration 29: Log likelihood = -2713.5447
+Iteration 30: Log likelihood = -2713.5447
+Refining estimates:
+Iteration 0:  Log likelihood = -2713.5447
+Iteration 1:  Log likelihood = -2713.5447
+Iteration 2:  Log likelihood = -2713.5447
+
+Cox regression with Breslow method for ties
+
+No. of subjects =       2,885                           Number of obs =  2,885
+No. of failures =         356
+Time at risk    = 40,050.4695
+                                                        LR chi2(57)   = 208.34
+Log likelihood = -2713.5447                             Prob > chi2   = 0.0000
+
+-----------------------------------------------------------------------------------------
+                     _t | Haz. ratio   Std. err.      z    P>|z|     [95% conf. interval]
+------------------------+----------------------------------------------------------------
+          bmi_wc10_2006 |
+       Normal, WC >=80  |    2.89335   1.326102     2.32   0.020     1.178343    7.104444
+    Overweight, WC <90  |   2.553457   1.279466     1.87   0.061     .9563463    6.817764
+   Overweight, WC >=90  |   5.461531    2.36051     3.93   0.000     2.341097    12.74117
+    Obesity 1, WC <105  |   6.953115   3.060791     4.41   0.000     2.934113    16.47715
+   Obesity 1, WC >=105  |   9.162668   4.119749     4.93   0.000     3.795788    22.11781
+    Obesity 2, WC <115  |   7.460173   3.516412     4.26   0.000     2.961613    18.79185
+   Obesity 2, WC >=115  |   9.564601   4.671655     4.62   0.000     3.672087     24.9127
+    Obesity 3, WC <115  |   8.402127   4.890401     3.66   0.000     2.685055     26.2921
+   Obesity 3, WC >=115  |    11.2941   5.302908     5.16   0.000     4.499746    28.34755
+                        |
+              RACE_ETHN |
+                     2  |    3.32041   2.731208     1.46   0.145     .6622694    16.64749
+                     3  |   9.341398    7.67237     2.72   0.007     1.867646    46.72284
+                     4  |   6.246384   5.138825     2.23   0.026     1.245534    31.32578
+                        |
+bmi_wc10_2006#RACE_ETHN |
+     Normal, WC >=80#2  |   .3978426   .3914211    -0.94   0.349     .0578427    2.736364
+     Normal, WC >=80#3  |    .047964   .0628423    -2.32   0.020     .0036785    .6254001
+     Normal, WC >=80#4  |    .202381   .2653041    -1.22   0.223     .0154995    2.642543
+  Overweight, WC <90#2  |   1.071244   1.052157     0.07   0.944     .1562619     7.34385
+  Overweight, WC <90#3  |   .4704152   .4387232    -0.81   0.419     .0756181    2.926423
+  Overweight, WC <90#4  |    .602843   .6288646    -0.49   0.628     .0780299    4.657445
+ Overweight, WC >=90#2  |   .2380186   .2251369    -1.52   0.129     .0372801    1.519654
+ Overweight, WC >=90#3  |   .1188543   .1052923    -2.40   0.016     .0209383    .6746663
+ Overweight, WC >=90#4  |   .1900573   .2474174    -1.28   0.202     .0148179    2.437711
+  Obesity 1, WC <105#2  |   .6408587   .5584773    -0.51   0.610     .1161399    3.536252
+  Obesity 1, WC <105#3  |   .1137941   .1045447    -2.37   0.018     .0187977    .6888652
+  Obesity 1, WC <105#4  |   .3268273    .359986    -1.02   0.310     .0377361    2.830607
+ Obesity 1, WC >=105#2  |    .568722   .5058564    -0.63   0.526     .0994922    3.250957
+ Obesity 1, WC >=105#3  |   .2313252   .2043637    -1.66   0.098     .0409478    1.306817
+ Obesity 1, WC >=105#4  |   8.58e-16   1.36e-08    -0.00   1.000            0           .
+  Obesity 2, WC <115#2  |   .2902734   .2715197    -1.32   0.186     .0464087    1.815579
+  Obesity 2, WC <115#3  |   .1584321   .1633771    -1.79   0.074      .020993    1.195673
+  Obesity 2, WC <115#4  |   .2110185   .2779224    -1.18   0.237     .0159677    2.788673
+ Obesity 2, WC >=115#2  |   .2269844   .2536408    -1.33   0.184     .0253999    2.028432
+ Obesity 2, WC >=115#3  |   .2508833   .2619871    -1.32   0.185     .0324039    1.942435
+ Obesity 2, WC >=115#4  |   .3518358   .4665173    -0.79   0.431      .026163    4.731428
+  Obesity 3, WC <115#2  |     .21437   .2491651    -1.32   0.185     .0219685    2.091833
+  Obesity 3, WC <115#3  |   .3316693   .4520972    -0.81   0.418     .0229317    4.797059
+  Obesity 3, WC <115#4  |          1  (empty)
+ Obesity 3, WC >=115#2  |   .3950426   .3639678    -1.01   0.313     .0649231    2.403745
+ Obesity 3, WC >=115#3  |   .0499997   .0657259    -2.28   0.023     .0038023    .6574964
+ Obesity 3, WC >=115#4  |   4.84e-16   1.56e-08    -0.00   1.000            0           .
+                        |
+               r9agey_e |   .9754403   .0064507    -3.76   0.000     .9628787    .9881658
+                        |
+           marital_2006 |
+                     2  |   1.162674   .3766102     0.47   0.642     .6162244    2.193698
+                     3  |   1.146049    .385323     0.41   0.685     .5929437    2.215098
+                     4  |   1.050523   .3526135     0.15   0.883     .5441209    2.028224
+                        |
+              education |
+                     2  |    .819616   .2276429    -0.72   0.474     .4755485    1.412622
+                     3  |    .797041   .1283841    -1.41   0.159     .5812629    1.092921
+                     4  |   .9853073   .1687563    -0.09   0.931     .7043427     1.37835
+                     5  |   .8270138     .16402    -0.96   0.338     .5606549    1.219916
+                        |
+         totwealth_2006 |
+                     2  |   1.048259   .1472837     0.34   0.737     .7959246    1.380591
+                     3  |   .9712509   .2429882    -0.12   0.907     .5948087    1.585936
+                     4  |    2.97585   1.247394     2.60   0.009     1.308612    6.767234
+                     5  |   1.44e-14   1.37e-07    -0.00   1.000            0           .
+                        |
+           smoking_2006 |
+                     2  |   .8617708   .1059865    -1.21   0.226     .6771815    1.096676
+                     3  |   1.109807   .1841447     0.63   0.530     .8017004    1.536325
+                        |
+           alcohol_2006 |
+                     2  |   .9643447    .131994    -0.27   0.791     .7374367    1.261072
+                     3  |   .6653338   .1155911    -2.35   0.019     .4733223    .9352381
+                     4  |   .7883143   .1765373    -1.06   0.288     .5082519      1.2227
+                        |
+        physic_act_2006 |
+                     2  |   .9768243   .1647247    -0.14   0.889      .701901    1.359431
+                     3  |   .9495977     .13807    -0.36   0.722     .7141284    1.262708
+-----------------------------------------------------------------------------------------
+
+. testparm i.bmi_wc10_2006#i.RACE_ETHN
+
+ ( 1)  2.bmi_wc10_2006#2.RACE_ETHN = 0
+ ( 2)  2.bmi_wc10_2006#3.RACE_ETHN = 0
+ ( 3)  2.bmi_wc10_2006#4.RACE_ETHN = 0
+ ( 4)  3.bmi_wc10_2006#2.RACE_ETHN = 0
+ ( 5)  3.bmi_wc10_2006#3.RACE_ETHN = 0
+ ( 6)  3.bmi_wc10_2006#4.RACE_ETHN = 0
+ ( 7)  4.bmi_wc10_2006#2.RACE_ETHN = 0
+ ( 8)  4.bmi_wc10_2006#3.RACE_ETHN = 0
+ ( 9)  4.bmi_wc10_2006#4.RACE_ETHN = 0
+ (10)  5.bmi_wc10_2006#2.RACE_ETHN = 0
+ (11)  5.bmi_wc10_2006#3.RACE_ETHN = 0
+ (12)  5.bmi_wc10_2006#4.RACE_ETHN = 0
+ (13)  6.bmi_wc10_2006#2.RACE_ETHN = 0
+ (14)  6.bmi_wc10_2006#3.RACE_ETHN = 0
+ (15)  6.bmi_wc10_2006#4.RACE_ETHN = 0
+ (16)  7.bmi_wc10_2006#2.RACE_ETHN = 0
+ (17)  7.bmi_wc10_2006#3.RACE_ETHN = 0
+ (18)  7.bmi_wc10_2006#4.RACE_ETHN = 0
+ (19)  8.bmi_wc10_2006#2.RACE_ETHN = 0
+ (20)  8.bmi_wc10_2006#3.RACE_ETHN = 0
+ (21)  8.bmi_wc10_2006#4.RACE_ETHN = 0
+ (22)  9.bmi_wc10_2006#2.RACE_ETHN = 0
+ (23)  9.bmi_wc10_2006#3.RACE_ETHN = 0
+ (24)  10.bmi_wc10_2006#2.RACE_ETHN = 0
+ (25)  10.bmi_wc10_2006#3.RACE_ETHN = 0
+ (26)  10.bmi_wc10_2006#4.RACE_ETHN = 0
+
+           chi2( 26) =   25.37
+         Prob > chi2 =    0.4981
+
+. putexcel A`row' = "Race/ethnicity" B`row' = (r(df)) C`row' = (r(chi2)) D`row' = (r(p))
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+
+. 
+. ********************************************************************************
+. ** 13. FIGURE 2: KAPLAN-MEIER / FAILURE CURVE BY BMI CATEGORY
+. ********************************************************************************
+. 
+. open_section_log FIGURE2

@@ -1,0 +1,125 @@
+
+. 
+. 
+. 
+. **********************SVY SET UP*********************************************
+. ********************************************************************************
+. ** SURVEY DESIGN SETUP FOR HRS
+. ********************************************************************************
+. 
+. use "D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS\HRS_BMWCDIABETES_ANALYTIC_FIN
+> ALfin.dta", clear
+
+. 
+. * restrict to analytic sample
+. keep if sample_final==1
+(0 observations deleted)
+
+. 
+. 
+. * check survey variables
+. describe secu stratum kwgtr
+
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+----------------------------------------------------------------------------------------------------------------------------------------
+secu            byte    %8.0g                 sampling error computation unit
+stratum         byte    %8.0g                 stratum id
+kwgtr           int     %8.0g                 2006 weight: respondent level
+
+. 
+. * set survey design
+. svyset secu [pweight=kwgtr], strata(stratum) vce(linearized) singleunit(centered)
+
+Sampling weights: kwgtr
+             VCE: linearized
+     Single unit: centered
+        Strata 1: stratum
+ Sampling unit 1: secu
+           FPC 1: <zero>
+
+. 
+. svydes
+
+Survey: Describing stage 1 sampling units
+
+Sampling weights: kwgtr
+             VCE: linearized
+     Single unit: centered
+        Strata 1: stratum
+ Sampling unit 1: secu
+           FPC 1: <zero>
+
+                                    Number of obs per unit
+ Stratum   # units     # obs       Min      Mean       Max
+----------------------------------------------------------
+       1         2        37        17      18.5        20
+       2         2        46        21      23.0        25
+       3         2        32        14      16.0        18
+       4         2        37        15      18.5        22
+       5         2        35        15      17.5        20
+       6         2        41        18      20.5        23
+       7         2        53        24      26.5        29
+       8         2        58        24      29.0        34
+       9         2        45        19      22.5        26
+      10         2        41        15      20.5        26
+      11         2        35        17      17.5        18
+      12         2        32        12      16.0        20
+      13         2        27        11      13.5        16
+      14         2        24         6      12.0        18
+      15         2        20         7      10.0        13
+      16         2        25        11      12.5        14
+      17         2        37        14      18.5        23
+      18         2        31        12      15.5        19
+      19         2        30        14      15.0        16
+      20         2        40        19      20.0        21
+      21         2        44        21      22.0        23
+      22         2        21        10      10.5        11
+      23         2        25        12      12.5        13
+      24         2        11         3       5.5         8
+      25         2        15         6       7.5         9
+      26         2        54        26      27.0        28
+      27         2        73        36      36.5        37
+      28         2        79        29      39.5        50
+      29         2        84        41      42.0        43
+      30         2        94        44      47.0        50
+      31         2        90        45      45.0        45
+      32         2        73        33      36.5        40
+      33         2        85        37      42.5        48
+      34         2        74        34      37.0        40
+      35         2        21        10      10.5        11
+      36         2        59        16      29.5        43
+      37         2        34        13      17.0        21
+      38         2        65        28      32.5        37
+      39         2        58        24      29.0        34
+      40         2        94        43      47.0        51
+      41         2        82        36      41.0        46
+      42         2        85        40      42.5        45
+      43         2        77        29      38.5        48
+      44         2        83        32      41.5        51
+      45         2       113        40      56.5        73
+      46         2       123        55      61.5        68
+      47         2        90        40      45.0        50
+      48         2        59        26      29.5        33
+      49         2        64        32      32.0        32
+      50         2        77        33      38.5        44
+      51         2        80        37      40.0        43
+      52         2        21         6      10.5        15
+      53         2        10         3       5.0         7
+      54         2         6         3       3.0         3
+      55         2        24         3      12.0        21
+      56         2        12         5       6.0         7
+----------------------------------------------------------
+      56       112     2,885         3      25.8        73
+
+. 
+. 
+. save "D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS\HRS_BMWCDIABETES_ANALYTIC_FI
+> NALfin.dta", replace
+file
+    D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS\HRS_BMWCDIABETES_ANALYTIC_FINA
+    > Lfin.dta saved
+
+. 
+. 
+. capture log close

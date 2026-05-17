@@ -1,0 +1,84 @@
+
+. stset fu_yrs, failure(fail_diabetes==1) id(HHIDPN)
+
+Survival-time data settings
+
+           ID variable: HHIDPN
+         Failure event: fail_diabetes==1
+Observed time interval: (fu_yrs[_n-1], fu_yrs]
+     Exit on or before: failure
+
+--------------------------------------------------------------------------
+      2,885  total observations
+          0  exclusions
+--------------------------------------------------------------------------
+      2,885  observations remaining, representing
+      2,885  subjects
+        356  failures in single-failure-per-subject data
+  40,050.47  total analysis time at risk and under observation
+                                                At risk from t =         0
+                                     Earliest observed entry t =         0
+                                          Last observed exit t =  15.00068
+
+. sts graph, by(bmi5_2006) failure ///
+>     title("HRS women: Incident diabetes by BMI category", size(small)) ///
+>     ytitle("Cumulative incidence of diabetes") ///
+>     xtitle("Years since 2006 baseline") xlabel(0(2)14) xscale(range(0 14)) ///
+>     yscale(range(0 0.5) noextend) ylabel(0(0.1)0.5, format(%3.1f)) ///
+>     risktable(0(2)14, size(vsmall)) ///
+>     legend(order(1 "Normal" 2 "Overweight" 3 "Obesity 1" 4 "Obesity 2" 5 "Obesity 3") rows(2) size(small) region(lstyle(none))) ///
+>     graphregion(margin(large)) plotregion(margin(medium))
+
+        Failure _d: fail_diabetes==1
+  Analysis time _t: fu_yrs
+       ID variable: HHIDPN
+
+. graph save "$outdir\Figure2_HRS_Women_KM_BMI_diabetes.gph", replace
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\Figure2_HRS_Women_KM_BMI_diab
+> etes.gph saved
+
+. graph export "$outdir\Figure2_HRS_Women_KM_BMI_diabetes.png", replace width(2400)
+file
+    D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\Figure2_HRS_Women_KM_BMI_dia
+    > betes.png saved as PNG format
+
+. graph export "$outdir\Figure2_HRS_Women_KM_BMI_diabetes.tif", replace width(2400)
+file
+    D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\Figure2_HRS_Women_KM_BMI_dia
+    > betes.tif saved as TIFF format
+
+. sts test bmi5_2006, logrank
+
+        Failure _d: fail_diabetes==1
+  Analysis time _t: fu_yrs
+       ID variable: HHIDPN
+
+Equality of survivor functions
+Log-rank test
+
+           |  Observed       Expected
+bmi5_2006  |    events         events
+-----------+-------------------------
+    Normal |        42         109.50
+Overweight |       101         118.86
+ Obesity 1 |       123          75.38
+ Obesity 2 |        51          32.90
+ Obesity 3 |        39          19.35
+-----------+-------------------------
+     Total |       356         356.00
+
+                     chi2(4) = 106.84
+                     Pr>chi2 = 0.0000
+
+. putexcel set "$xlsx", sheet("Figure2_Logrank_BMI") modify
+
+. putexcel A1="Figure 2 log-rank test: BMI category. Full output is in HRS_FIGURE2.txt."
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\HRS\HRS_Supplementary_Datasheet_T
+> ables1_to_6.xlsx saved
+
+. 
+. ********************************************************************************
+. ** 14. FIGURE 3: KAPLAN-MEIER / FAILURE CURVE BY BMI-SPECIFIC WC CATEGORY
+. ********************************************************************************
+. 
+. open_section_log FIGURE3

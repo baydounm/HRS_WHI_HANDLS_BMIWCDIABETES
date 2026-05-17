@@ -1,0 +1,1018 @@
+
+. 
+. *********************** TIME TO EVENT SET UP: INCIDENT DIABETES ************
+. 
+. use ///
+> "D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS\HRS_BMWCDIABETES_ANALYTIC_FINAL.d
+> ta", ///
+> clear
+
+. 
+. ********************************************************************************
+. ** STEP 1. RESTRICT TO FINAL ANALYTIC SAMPLE
+. ********************************************************************************
+. 
+. keep if sample_final==1
+(43,973 observations deleted)
+
+. tab sample_final, missing
+
+      Final |
+   analytic |
+    sample: |
+      women |
+diabetes-fr |
+ee in 2006, |
+ BMI>=18.5, |
+   complete |
+       data |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 |      2,885      100.00      100.00
+------------+-----------------------------------
+      Total |      2,885      100.00
+
+. count
+  2,885
+
+. 
+. ********************************************************************************
+. ** STEP 2. CONFIRM DIABETES VARIABLES: BASELINE 2006 THROUGH 2020
+. ********************************************************************************
+. 
+. tab diab_ever_2006, missing
+
+   Ever had |
+diabetes by |
+       2006 |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |      2,885      100.00      100.00
+------------+-----------------------------------
+      Total |      2,885      100.00
+
+. tab diab_ever_2008, missing
+
+   Ever had |
+diabetes by |
+       2008 |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |      2,572       89.15       89.15
+          1 |         84        2.91       92.06
+          . |        229        7.94      100.00
+------------+-----------------------------------
+      Total |      2,885      100.00
+
+. tab diab_ever_2010, missing
+
+   Ever had |
+diabetes by |
+       2010 |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |      2,341       81.14       81.14
+          1 |        142        4.92       86.07
+          . |        402       13.93      100.00
+------------+-----------------------------------
+      Total |      2,885      100.00
+
+. tab diab_ever_2012, missing
+
+   Ever had |
+diabetes by |
+       2012 |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |      2,070       71.75       71.75
+          1 |        204        7.07       78.82
+          . |        611       21.18      100.00
+------------+-----------------------------------
+      Total |      2,885      100.00
+
+. tab diab_ever_2014, missing
+
+   Ever had |
+diabetes by |
+       2014 |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |      1,777       61.59       61.59
+          1 |        245        8.49       70.09
+          . |        863       29.91      100.00
+------------+-----------------------------------
+      Total |      2,885      100.00
+
+. tab diab_ever_2016, missing
+
+   Ever had |
+diabetes by |
+       2016 |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |      1,428       49.50       49.50
+          1 |        240        8.32       57.82
+          . |      1,217       42.18      100.00
+------------+-----------------------------------
+      Total |      2,885      100.00
+
+. tab diab_ever_2018, missing
+
+   Ever had |
+diabetes by |
+       2018 |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |      1,212       42.01       42.01
+          1 |        231        8.01       50.02
+          . |      1,442       49.98      100.00
+------------+-----------------------------------
+      Total |      2,885      100.00
+
+. tab diab_ever_2020, missing
+
+   Ever had |
+diabetes by |
+       2020 |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |      1,212       42.01       42.01
+          1 |        231        8.01       50.02
+          . |      1,442       49.98      100.00
+------------+-----------------------------------
+      Total |      2,885      100.00
+
+. 
+. * Baseline risk set: diabetes-free in 2006
+. keep if diab_ever_2006==0
+(0 observations deleted)
+
+. count
+  2,885
+
+. 
+. ********************************************************************************
+. ** STEP 3. CREATE DEATH DATE FROM TRACKER FILE
+. ********************************************************************************
+. 
+. capture drop died
+
+. gen died=.
+(2,885 missing values generated)
+
+. replace died=1 if knowndeceasedyr<.
+(1,110 real changes made)
+
+. replace died=0 if knowndeceasedyr==.
+(1,775 real changes made)
+
+. label var died "Died during follow-up according to tracker file"
+
+. 
+. capture drop deathmonth
+
+. gen deathmonth=knowndeceasedmo
+(1,775 missing values generated)
+
+. replace deathmonth=. if inlist(deathmonth, 0, 98, 99)
+(9 real changes made, 9 to missing)
+
+. 
+. capture drop deathyear
+
+. gen deathyear=knowndeceasedyr
+(1,775 missing values generated)
+
+. replace deathyear=. if inlist(deathyear, 0, 9998, 9999)
+(0 real changes made)
+
+. 
+. * If death month missing but death year known, assign June
+. replace deathmonth=6 if deathyear<. & deathmonth==.
+(9 real changes made)
+
+. 
+. capture drop deathday
+
+. gen deathday=15 if deathyear<.
+(1,775 missing values generated)
+
+. 
+. capture drop dod
+
+. gen dod=mdy(deathmonth, deathday, deathyear)
+(1,775 missing values generated)
+
+. format dod %td
+
+. label var dod "Date of death from tracker file"
+
+. 
+. summ dod if died==1, detail
+
+               Date of death from tracker file
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%        17881          17667
+ 5%        18185          17698
+10%      18504.5          17759       Obs               1,110
+25%        19404          17790       Sum of wgt.       1,110
+
+50%        20712                      Mean           20576.03
+                        Largest       Std. dev.      1424.448
+75%        21807          23084
+90%        22385          23145       Variance        2029051
+95%        22691          23176       Skewness       -.180397
+99%        22994          23176       Kurtosis       1.920905
+
+. 
+. ********************************************************************************
+. ** STEP 4. CREATE BASELINE, FOLLOW-UP WAVE, AND ADMINISTRATIVE CENSORING DATES
+. ********************************************************************************
+. 
+. capture drop doenter
+
+. gen doenter=mdy(1,1,2006)
+
+. format doenter %td
+
+. label var doenter "Baseline date: Jan 1, 2006"
+
+. 
+. capture drop doiw2008 doiw2010 doiw2012 doiw2014 doiw2016 doiw2018 doiw2020
+
+. 
+. gen doiw2008=mdy(7,1,2008)
+
+. gen doiw2010=mdy(7,1,2010)
+
+. gen doiw2012=mdy(7,1,2012)
+
+. gen doiw2014=mdy(7,1,2014)
+
+. gen doiw2016=mdy(7,1,2016)
+
+. gen doiw2018=mdy(7,1,2018)
+
+. gen doiw2020=mdy(7,1,2020)
+
+. 
+. format doiw2008 doiw2010 doiw2012 doiw2014 doiw2016 doiw2018 doiw2020 %td
+
+. 
+. capture drop doadmin
+
+. gen doadmin=mdy(1,1,2021)
+
+. format doadmin %td
+
+. label var doadmin "Administrative censoring date: Jan 1, 2021"
+
+. 
+. ********************************************************************************
+. ** STEP 5. INCIDENT DIABETES FLAGS AT EACH FOLLOW-UP WAVE
+. ********************************************************************************
+. 
+. capture drop event2008 event2010 event2012 event2014 event2016 event2018 event2020
+
+. 
+. gen event2008=0
+
+. replace event2008=1 if diab_ever_2006==0 & diab_ever_2008==1
+(84 real changes made)
+
+. 
+. gen event2010=0
+
+. replace event2010=1 if diab_ever_2006==0 & ///
+>     (diab_ever_2008==0 | missing(diab_ever_2008)) & diab_ever_2010==1
+(69 real changes made)
+
+. 
+. gen event2012=0
+
+. replace event2012=1 if diab_ever_2006==0 & ///
+>     (diab_ever_2008==0 | missing(diab_ever_2008)) & ///
+>     (diab_ever_2010==0 | missing(diab_ever_2010)) & diab_ever_2012==1
+(73 real changes made)
+
+. 
+. gen event2014=0
+
+. replace event2014=1 if diab_ever_2006==0 & ///
+>     (diab_ever_2008==0 | missing(diab_ever_2008)) & ///
+>     (diab_ever_2010==0 | missing(diab_ever_2010)) & ///
+>     (diab_ever_2012==0 | missing(diab_ever_2012)) & diab_ever_2014==1
+(65 real changes made)
+
+. 
+. gen event2016=0
+
+. replace event2016=1 if diab_ever_2006==0 & ///
+>     (diab_ever_2008==0 | missing(diab_ever_2008)) & ///
+>     (diab_ever_2010==0 | missing(diab_ever_2010)) & ///
+>     (diab_ever_2012==0 | missing(diab_ever_2012)) & ///
+>     (diab_ever_2014==0 | missing(diab_ever_2014)) & diab_ever_2016==1
+(34 real changes made)
+
+. 
+. gen event2018=0
+
+. replace event2018=1 if diab_ever_2006==0 & ///
+>     (diab_ever_2008==0 | missing(diab_ever_2008)) & ///
+>     (diab_ever_2010==0 | missing(diab_ever_2010)) & ///
+>     (diab_ever_2012==0 | missing(diab_ever_2012)) & ///
+>     (diab_ever_2014==0 | missing(diab_ever_2014)) & ///
+>     (diab_ever_2016==0 | missing(diab_ever_2016)) & diab_ever_2018==1
+(31 real changes made)
+
+. 
+. gen event2020=0
+
+. replace event2020=1 if diab_ever_2006==0 & ///
+>     (diab_ever_2008==0 | missing(diab_ever_2008)) & ///
+>     (diab_ever_2010==0 | missing(diab_ever_2010)) & ///
+>     (diab_ever_2012==0 | missing(diab_ever_2012)) & ///
+>     (diab_ever_2014==0 | missing(diab_ever_2014)) & ///
+>     (diab_ever_2016==0 | missing(diab_ever_2016)) & ///
+>     (diab_ever_2018==0 | missing(diab_ever_2018)) & diab_ever_2020==1
+(0 real changes made)
+
+. 
+. ********************************************************************************
+. ** STEP 6. FIRST INCIDENT DIABETES DATE
+. ********************************************************************************
+. 
+. capture drop dodiabevent
+
+. gen dodiabevent=.
+(2,885 missing values generated)
+
+. 
+. replace dodiabevent = doenter   + floor((doiw2008-doenter)/2)   if event2008==1
+(84 real changes made)
+
+. replace dodiabevent = doiw2008  + floor((doiw2010-doiw2008)/2)  if event2010==1
+(69 real changes made)
+
+. replace dodiabevent = doiw2010  + floor((doiw2012-doiw2010)/2)  if event2012==1
+(73 real changes made)
+
+. replace dodiabevent = doiw2012  + floor((doiw2014-doiw2012)/2)  if event2014==1
+(65 real changes made)
+
+. replace dodiabevent = doiw2014  + floor((doiw2016-doiw2014)/2)  if event2016==1
+(34 real changes made)
+
+. replace dodiabevent = doiw2016  + floor((doiw2018-doiw2016)/2)  if event2018==1
+(31 real changes made)
+
+. replace dodiabevent = doiw2018  + floor((doiw2020-doiw2018)/2)  if event2020==1
+(0 real changes made)
+
+. 
+. format dodiabevent %td
+
+. label var dodiabevent "Estimated date of first incident diabetes"
+
+. 
+. ********************************************************************************
+. ** STEP 7. CENSORING AND FINAL FOLLOW-UP DATE
+. ********************************************************************************
+. 
+. capture drop docensor
+
+. gen docensor=doadmin
+
+. replace docensor=dod if dod<docensor & dod<.
+(973 real changes made)
+
+. format docensor %td
+
+. label var docensor "Censoring date: death or Jan 1, 2021"
+
+. 
+. capture drop fail_diabetes
+
+. gen fail_diabetes=0
+
+. replace fail_diabetes=1 if dodiabevent<. & ///
+>     (dod==. | dodiabevent<=dod) & ///
+>     dodiabevent<=doadmin
+(356 real changes made)
+
+. 
+. label var fail_diabetes "Incident diabetes during follow-up"
+
+. 
+. capture drop doevent
+
+. gen doevent=docensor
+
+. replace doevent=dodiabevent if fail_diabetes==1
+(356 real changes made)
+
+. format doevent %td
+
+. label var doevent "End of follow-up date"
+
+. 
+. ********************************************************************************
+. ** STEP 8. PERSON-TIME VARIABLES
+. ********************************************************************************
+. 
+. capture drop fu_days fu_yrs
+
+. gen fu_days = doevent - doenter
+
+. replace fu_days = . if fu_days<0
+(0 real changes made)
+
+. gen fu_yrs = fu_days/365.25
+
+. 
+. label var fu_days "Follow-up time in days"
+
+. label var fu_yrs  "Follow-up time in years"
+
+. 
+. summ fu_yrs, detail
+
+                   Follow-up time in years
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%      1.24846        1.24846
+ 5%     3.496235        1.24846
+10%     5.037645        1.24846       Obs               2,885
+25%     9.451061        1.24846       Sum of wgt.       2,885
+
+50%     15.00068                      Mean           12.06682
+                        Largest       Std. dev.      4.212235
+75%     15.00068       15.00068
+90%     15.00068       15.00068       Variance       17.74293
+95%     15.00068       15.00068       Skewness      -1.151936
+99%     15.00068       15.00068       Kurtosis       2.916123
+
+. summ fu_yrs if fail_diabetes==1, detail
+
+                   Follow-up time in years
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%      1.24846        1.24846
+ 5%      1.24846        1.24846
+10%      1.24846        1.24846       Obs                 356
+25%     3.496235        1.24846       Sum of wgt.         356
+
+50%     5.494866                      Mean           5.375562
+                        Largest       Std. dev.      3.231058
+75%     7.496235       11.49624
+90%     9.494866       11.49624       Variance       10.43974
+95%     11.49624       11.49624       Skewness       .3129237
+99%     11.49624       11.49624       Kurtosis       2.069416
+
+. summ fu_yrs if fail_diabetes==0, detail
+
+                   Follow-up time in years
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     3.200547       2.368241
+ 5%     4.870636       2.453114
+10%     6.872005       2.620123       Obs               2,529
+25%     11.87132       2.704997       Sum of wgt.       2,529
+
+50%     15.00068                      Mean           13.00873
+                        Largest       Std. dev.      3.403368
+75%     15.00068       15.00068
+90%     15.00068       15.00068       Variance       11.58291
+95%     15.00068       15.00068       Skewness      -1.563652
+99%     15.00068       15.00068       Kurtosis        4.09066
+
+. 
+. ********************************************************************************
+. ** STEP 9. COMPETING DEATH INDICATOR
+. ********************************************************************************
+. 
+. capture drop death_before_diabetes
+
+. gen death_before_diabetes=0
+
+. replace death_before_diabetes=1 if died==1 & ///
+>     (dodiabevent==. | dod<dodiabevent) & ///
+>     dod<=doadmin
+(894 real changes made)
+
+. 
+. label var death_before_diabetes "Death before incident diabetes"
+
+. 
+. capture drop fu_status
+
+. gen fu_status=.
+(2,885 missing values generated)
+
+. replace fu_status=1 if fail_diabetes==1
+(356 real changes made)
+
+. replace fu_status=2 if fail_diabetes==0 & death_before_diabetes==1
+(894 real changes made)
+
+. replace fu_status=0 if fail_diabetes==0 & death_before_diabetes==0
+(1,635 real changes made)
+
+. 
+. label define fu_status_diab 0 "censored" 1 "incident diabetes" 2 "death before diabetes", replace
+
+. label values fu_status fu_status_diab
+
+. tab fu_status, missing
+
+            fu_status |      Freq.     Percent        Cum.
+----------------------+-----------------------------------
+             censored |      1,635       56.67       56.67
+    incident diabetes |        356       12.34       69.01
+death before diabetes |        894       30.99      100.00
+----------------------+-----------------------------------
+                Total |      2,885      100.00
+
+. 
+. ********************************************************************************
+. ** STEP 10. AGE-AT-ENTRY / AGE-AT-EVENT VARIABLES
+. ********************************************************************************
+. 
+. capture drop dob
+
+. gen dob=mdy(birthmo,15,birthyr)
+
+. format dob %td
+
+. label var dob "Date of birth"
+
+. 
+. capture drop ageenter ageevent
+
+. gen ageenter=(doenter-dob)/365.25
+
+. gen ageevent=(doevent-dob)/365.25
+
+. 
+. label var ageenter "Age at baseline"
+
+. label var ageevent "Age at diabetes/death/censoring"
+
+. 
+. summ ageenter ageevent, detail
+
+                       Age at baseline
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     48.79945       47.12936
+ 5%      51.8768       47.46612
+10%     53.46475       47.54826       Obs               2,885
+25%     58.87748       47.63313       Sum of wgt.       2,885
+
+50%     66.71595                      Mean           67.10134
+                        Largest       Std. dev.       10.2168
+75%     74.29706        94.4668
+90%     81.46475       94.80082       Variance        104.383
+95%     85.04586       97.29501       Skewness       .2530069
+99%     90.38193       97.63176       Kurtosis       2.383909
+
+               Age at diabetes/death/censoring
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%      57.2512       50.88022
+ 5%     63.63313       51.12936
+10%      66.4668        51.4579       Obs               2,885
+25%     71.46612       51.58111       Sum of wgt.       2,885
+
+50%     79.46612                      Mean           79.16816
+                        Largest       Std. dev.      9.891826
+75%     86.45859       104.6653
+90%     91.96167       104.7995       Variance       97.84822
+95%     94.91581       104.8323       Skewness      -.0417661
+99%     100.5859       105.4155       Kurtosis       2.472766
+
+. 
+. ********************************************************************************
+. ** STEP 11. STSET FOR MAIN COX / WEIBULL MODELS
+. ********************************************************************************
+. 
+. stset ageevent, origin(time ageenter) enter(time ageenter) ///
+>     failure(fail_diabetes==1) id(HHIDPN)
+
+Survival-time data settings
+
+           ID variable: HHIDPN
+         Failure event: fail_diabetes==1
+Observed time interval: (ageevent[_n-1], ageevent]
+     Enter on or after: time ageenter
+     Exit on or before: failure
+     Time for analysis: (time-origin)
+                Origin: time ageenter
+
+--------------------------------------------------------------------------
+      2,885  total observations
+          0  exclusions
+--------------------------------------------------------------------------
+      2,885  observations remaining, representing
+      2,885  subjects
+        356  failures in single-failure-per-subject data
+ 34,812.786  total analysis time at risk and under observation
+                                                At risk from t =         0
+                                     Earliest observed entry t =         0
+                                          Last observed exit t =  15.00069
+
+. 
+. stsum
+
+         Failure _d: fail_diabetes==1
+   Analysis time _t: (ageevent-origin)
+             Origin: time ageenter
+  Enter on or after: time ageenter
+        ID variable: HHIDPN
+
+         |               Incidence     Number of   |------ Survival time -----|
+         | Time at risk       rate      subjects        25%       50%       75%
+---------+---------------------------------------------------------------------
+   Total |   34,812.786   .0102261          2885          .         .         .
+
+. sts list, by(fail_diabetes)
+
+         Failure _d: fail_diabetes==1
+   Analysis time _t: (ageevent-origin)
+             Origin: time ageenter
+  Enter on or after: time ageenter
+        ID variable: HHIDPN
+
+Kaplan–Meier survivor function
+By variable: fail_diabetes
+
+             At           Net    Survivor      Std.
+  Time     risk   Fail   lost    function     error     [95% conf. int.]
+------------------------------------------------------------------------
+fail_diabetes=0 
+ 2.368     2529      0      1      1.0000         .          .         .
+ 2.453     2528      0      1      1.0000         .          .         .
+  2.62     2527      0      1      1.0000         .          .         .
+ 2.705     2526      0      2      1.0000         .          .         .
+ 2.872     2524      0      3      1.0000         .          .         .
+ 2.872     2521      0      2      1.0000         .          .         .
+ 2.954     2519      0      2      1.0000         .          .         .
+ 3.039     2517      0      1      1.0000         .          .         .
+ 3.124     2516      0      6      1.0000         .          .         .
+ 3.124     2510      0      1      1.0000         .          .         .
+ 3.201     2509      0      6      1.0000         .          .         .
+ 3.285     2503      0      2      1.0000         .          .         .
+ 3.285     2501      0      4      1.0000         .          .         .
+ 3.368     2497      0      3      1.0000         .          .         .
+ 3.368     2494      0      1      1.0000         .          .         .
+ 3.452     2493      0      4      1.0000         .          .         .
+ 3.535     2489      0      2      1.0000         .          .         .
+ 3.535     2487      0      1      1.0000         .          .         .
+ 3.535     2486      0      3      1.0000         .          .         .
+ 3.619     2483      0      4      1.0000         .          .         .
+ 3.619     2479      0      1      1.0000         .          .         .
+ 3.704     2478      0      1      1.0000         .          .         .
+ 3.704     2477      0      2      1.0000         .          .         .
+ 3.786     2475      0      2      1.0000         .          .         .
+ 3.786     2473      0      4      1.0000         .          .         .
+ 3.871     2469      0      2      1.0000         .          .         .
+ 3.953     2467      0      2      1.0000         .          .         .
+ 3.953     2465      0      3      1.0000         .          .         .
+ 4.038     2462      0      6      1.0000         .          .         .
+ 4.123     2456      0      1      1.0000         .          .         .
+ 4.123     2455      0      2      1.0000         .          .         .
+   4.2     2453      0      2      1.0000         .          .         .
+   4.2     2451      0      1      1.0000         .          .         .
+   4.2     2450      0      2      1.0000         .          .         .
+ 4.285     2448      0      3      1.0000         .          .         .
+ 4.367     2445      0      1      1.0000         .          .         .
+ 4.367     2444      0      3      1.0000         .          .         .
+ 4.452     2441      0      4      1.0000         .          .         .
+ 4.452     2437      0      2      1.0000         .          .         .
+ 4.534     2435      0      2      1.0000         .          .         .
+ 4.534     2433      0      4      1.0000         .          .         .
+ 4.619     2429      0      6      1.0000         .          .         .
+ 4.619     2423      0      1      1.0000         .          .         .
+ 4.619     2422      0      3      1.0000         .          .         .
+ 4.704     2419      0      1      1.0000         .          .         .
+ 4.704     2418      0      4      1.0000         .          .         .
+ 4.786     2414      0      4      1.0000         .          .         .
+ 4.786     2410      0      5      1.0000         .          .         .
+ 4.871     2405      0      9      1.0000         .          .         .
+ 4.953     2396      0      1      1.0000         .          .         .
+ 4.953     2395      0      1      1.0000         .          .         .
+ 5.038     2394      0      5      1.0000         .          .         .
+ 5.123     2389      0      3      1.0000         .          .         .
+ 5.199     2386      0      1      1.0000         .          .         .
+ 5.199     2385      0      1      1.0000         .          .         .
+ 5.284     2384      0      2      1.0000         .          .         .
+ 5.366     2382      0      1      1.0000         .          .         .
+ 5.366     2381      0      1      1.0000         .          .         .
+ 5.451     2380      0      3      1.0000         .          .         .
+ 5.533     2377      0      6      1.0000         .          .         .
+ 5.618     2371      0      7      1.0000         .          .         .
+ 5.618     2364      0      2      1.0000         .          .         .
+ 5.703     2362      0      3      1.0000         .          .         .
+ 5.703     2359      0      1      1.0000         .          .         .
+ 5.785     2358      0      2      1.0000         .          .         .
+ 5.785     2356      0      4      1.0000         .          .         .
+  5.87     2352      0      7      1.0000         .          .         .
+  5.87     2345      0      5      1.0000         .          .         .
+ 5.952     2340      0      5      1.0000         .          .         .
+ 5.952     2335      0      1      1.0000         .          .         .
+ 6.037     2334      0      6      1.0000         .          .         .
+ 6.037     2328      0      1      1.0000         .          .         .
+ 6.037     2327      0      3      1.0000         .          .         .
+ 6.122     2324      0      3      1.0000         .          .         .
+ 6.201     2321      0      1      1.0000         .          .         .
+ 6.201     2320      0      5      1.0000         .          .         .
+ 6.286     2315      0      3      1.0000         .          .         .
+ 6.368     2312      0      3      1.0000         .          .         .
+ 6.368     2309      0      1      1.0000         .          .         .
+ 6.453     2308      0      3      1.0000         .          .         .
+ 6.453     2305      0      3      1.0000         .          .         .
+ 6.535     2302      0      1      1.0000         .          .         .
+ 6.535     2301      0      2      1.0000         .          .         .
+ 6.535     2299      0      1      1.0000         .          .         .
+  6.62     2298      0      1      1.0000         .          .         .
+  6.62     2297      0      1      1.0000         .          .         .
+  6.62     2296      0      8      1.0000         .          .         .
+ 6.705     2288      0      1      1.0000         .          .         .
+ 6.787     2287      0      8      1.0000         .          .         .
+ 6.872     2279      0      3      1.0000         .          .         .
+ 6.872     2276      0      2      1.0000         .          .         .
+ 6.954     2274      0      5      1.0000         .          .         .
+ 6.954     2269      0      1      1.0000         .          .         .
+ 6.954     2268      0      3      1.0000         .          .         .
+ 7.039     2265      0      1      1.0000         .          .         .
+ 7.039     2264      0      4      1.0000         .          .         .
+ 7.124     2260      0      7      1.0000         .          .         .
+ 7.124     2253      0      1      1.0000         .          .         .
+ 7.124     2252      0      1      1.0000         .          .         .
+ 7.201     2251      0      5      1.0000         .          .         .
+ 7.201     2246      0      5      1.0000         .          .         .
+ 7.285     2241      0      1      1.0000         .          .         .
+ 7.285     2240      0      4      1.0000         .          .         .
+ 7.368     2236      0      2      1.0000         .          .         .
+ 7.368     2234      0      2      1.0000         .          .         .
+ 7.368     2232      0      1      1.0000         .          .         .
+ 7.452     2231      0      1      1.0000         .          .         .
+ 7.452     2230      0      5      1.0000         .          .         .
+ 7.535     2225      0      1      1.0000         .          .         .
+ 7.535     2224      0      1      1.0000         .          .         .
+ 7.619     2223      0      5      1.0000         .          .         .
+ 7.704     2218      0      3      1.0000         .          .         .
+ 7.704     2215      0      1      1.0000         .          .         .
+ 7.704     2214      0      5      1.0000         .          .         .
+ 7.786     2209      0      3      1.0000         .          .         .
+ 7.786     2206      0      2      1.0000         .          .         .
+ 7.871     2204      0      1      1.0000         .          .         .
+ 7.871     2203      0      5      1.0000         .          .         .
+ 7.871     2198      0      1      1.0000         .          .         .
+ 7.953     2197      0      2      1.0000         .          .         .
+ 7.953     2195      0      1      1.0000         .          .         .
+ 7.953     2194      0      5      1.0000         .          .         .
+ 8.038     2189      0      1      1.0000         .          .         .
+ 8.038     2188      0      6      1.0000         .          .         .
+ 8.123     2182      0      4      1.0000         .          .         .
+ 8.123     2178      0      2      1.0000         .          .         .
+   8.2     2176      0      2      1.0000         .          .         .
+   8.2     2174      0      4      1.0000         .          .         .
+ 8.285     2170      0      6      1.0000         .          .         .
+ 8.367     2164      0      4      1.0000         .          .         .
+ 8.367     2160      0      2      1.0000         .          .         .
+ 8.452     2158      0      8      1.0000         .          .         .
+ 8.534     2150      0      1      1.0000         .          .         .
+ 8.619     2149      0      2      1.0000         .          .         .
+ 8.619     2147      0      2      1.0000         .          .         .
+ 8.704     2145      0      1      1.0000         .          .         .
+ 8.704     2144      0      3      1.0000         .          .         .
+ 8.786     2141      0      1      1.0000         .          .         .
+ 8.786     2140      0      1      1.0000         .          .         .
+ 8.786     2139      0      1      1.0000         .          .         .
+ 8.871     2138      0      1      1.0000         .          .         .
+ 8.871     2137      0      1      1.0000         .          .         .
+ 8.871     2136      0      1      1.0000         .          .         .
+ 8.953     2135      0      1      1.0000         .          .         .
+ 8.953     2134      0      2      1.0000         .          .         .
+ 8.953     2132      0      4      1.0000         .          .         .
+ 9.038     2128      0      4      1.0000         .          .         .
+ 9.038     2124      0      3      1.0000         .          .         .
+ 9.123     2121      0      2      1.0000         .          .         .
+ 9.123     2119      0      1      1.0000         .          .         .
+ 9.199     2118      0      2      1.0000         .          .         .
+ 9.199     2116      0      5      1.0000         .          .         .
+ 9.284     2111      0      3      1.0000         .          .         .
+ 9.284     2108      0      2      1.0000         .          .         .
+ 9.366     2106      0      6      1.0000         .          .         .
+ 9.451     2100      0      4      1.0000         .          .         .
+ 9.451     2096      0      1      1.0000         .          .         .
+ 9.451     2095      0      1      1.0000         .          .         .
+ 9.533     2094      0      3      1.0000         .          .         .
+ 9.533     2091      0      1      1.0000         .          .         .
+ 9.533     2090      0      1      1.0000         .          .         .
+ 9.618     2089      0      2      1.0000         .          .         .
+ 9.703     2087      0      1      1.0000         .          .         .
+ 9.703     2086      0      1      1.0000         .          .         .
+ 9.785     2085      0      4      1.0000         .          .         .
+  9.87     2081      0      6      1.0000         .          .         .
+  9.87     2075      0      1      1.0000         .          .         .
+  9.87     2074      0      4      1.0000         .          .         .
+ 9.952     2070      0     12      1.0000         .          .         .
+ 10.04     2058      0      5      1.0000         .          .         .
+ 10.04     2053      0      1      1.0000         .          .         .
+ 10.04     2052      0      2      1.0000         .          .         .
+ 10.12     2050      0      1      1.0000         .          .         .
+ 10.12     2049      0      6      1.0000         .          .         .
+ 10.12     2043      0      2      1.0000         .          .         .
+  10.2     2041      0      1      1.0000         .          .         .
+  10.2     2040      0      6      1.0000         .          .         .
+ 10.29     2034      0      2      1.0000         .          .         .
+ 10.29     2032      0      1      1.0000         .          .         .
+ 10.29     2031      0      2      1.0000         .          .         .
+ 10.37     2029      0      6      1.0000         .          .         .
+ 10.37     2023      0      1      1.0000         .          .         .
+ 10.37     2022      0      2      1.0000         .          .         .
+ 10.45     2020      0      5      1.0000         .          .         .
+ 10.45     2015      0      6      1.0000         .          .         .
+ 10.54     2009      0      4      1.0000         .          .         .
+ 10.54     2005      0      1      1.0000         .          .         .
+ 10.62     2004      0      1      1.0000         .          .         .
+  10.7     2003      0      5      1.0000         .          .         .
+ 10.71     1998      0      1      1.0000         .          .         .
+ 10.79     1997      0      1      1.0000         .          .         .
+ 10.79     1996      0      7      1.0000         .          .         .
+ 10.87     1989      0      3      1.0000         .          .         .
+ 10.87     1986      0      3      1.0000         .          .         .
+ 10.95     1983      0      7      1.0000         .          .         .
+ 11.04     1976      0      2      1.0000         .          .         .
+ 11.04     1974      0      2      1.0000         .          .         .
+ 11.12     1972      0      5      1.0000         .          .         .
+ 11.12     1967      0      1      1.0000         .          .         .
+ 11.12     1966      0      2      1.0000         .          .         .
+  11.2     1964      0      4      1.0000         .          .         .
+  11.2     1960      0      2      1.0000         .          .         .
+ 11.29     1958      0      2      1.0000         .          .         .
+ 11.29     1956      0      3      1.0000         .          .         .
+ 11.37     1953      0      8      1.0000         .          .         .
+ 11.37     1945      0      3      1.0000         .          .         .
+ 11.45     1942      0      1      1.0000         .          .         .
+ 11.45     1941      0      2      1.0000         .          .         .
+ 11.53     1939      0      5      1.0000         .          .         .
+ 11.53     1934      0      3      1.0000         .          .         .
+ 11.62     1931      0      6      1.0000         .          .         .
+  11.7     1925      0      2      1.0000         .          .         .
+  11.7     1923      0      6      1.0000         .          .         .
+ 11.79     1917      0      6      1.0000         .          .         .
+ 11.79     1911      0      1      1.0000         .          .         .
+ 11.79     1910      0      3      1.0000         .          .         .
+ 11.87     1907      0     11      1.0000         .          .         .
+ 11.95     1896      0      6      1.0000         .          .         .
+ 11.95     1890      0      1      1.0000         .          .         .
+ 12.04     1889      0      4      1.0000         .          .         .
+ 12.12     1885      0      2      1.0000         .          .         .
+ 12.12     1883      0      2      1.0000         .          .         .
+ 12.12     1881      0      4      1.0000         .          .         .
+  12.2     1877      0      6      1.0000         .          .         .
+  12.2     1871      0      1      1.0000         .          .         .
+ 12.28     1870      0      6      1.0000         .          .         .
+ 12.37     1864      0      1      1.0000         .          .         .
+ 12.37     1863      0      1      1.0000         .          .         .
+ 12.37     1862      0      2      1.0000         .          .         .
+ 12.45     1860      0      8      1.0000         .          .         .
+ 12.45     1852      0      3      1.0000         .          .         .
+ 12.45     1849      0      2      1.0000         .          .         .
+ 12.53     1847      0      2      1.0000         .          .         .
+ 12.53     1845      0      3      1.0000         .          .         .
+ 12.53     1842      0      1      1.0000         .          .         .
+ 12.62     1841      0      5      1.0000         .          .         .
+ 12.62     1836      0      4      1.0000         .          .         .
+  12.7     1832      0      1      1.0000         .          .         .
+  12.7     1831      0      1      1.0000         .          .         .
+ 12.79     1830      0      5      1.0000         .          .         .
+ 12.79     1825      0      5      1.0000         .          .         .
+ 12.87     1820      0      1      1.0000         .          .         .
+ 12.87     1819      0      2      1.0000         .          .         .
+ 12.87     1817      0      2      1.0000         .          .         .
+ 12.95     1815      0      1      1.0000         .          .         .
+ 12.95     1814      0      1      1.0000         .          .         .
+ 12.95     1813      0      4      1.0000         .          .         .
+ 13.04     1809      0      2      1.0000         .          .         .
+ 13.12     1807      0      1      1.0000         .          .         .
+ 13.12     1806      0      1      1.0000         .          .         .
+ 13.12     1805      0      3      1.0000         .          .         .
+  13.2     1802      0      1      1.0000         .          .         .
+  13.2     1801      0      5      1.0000         .          .         .
+ 13.28     1796      0      6      1.0000         .          .         .
+ 13.28     1790      0      2      1.0000         .          .         .
+ 13.37     1788      0      1      1.0000         .          .         .
+ 13.37     1787      0     11      1.0000         .          .         .
+ 13.45     1776      0      6      1.0000         .          .         .
+ 13.45     1770      0      1      1.0000         .          .         .
+ 13.53     1769      0      6      1.0000         .          .         .
+ 13.53     1763      0      1      1.0000         .          .         .
+ 13.62     1762      0      1      1.0000         .          .         .
+ 13.62     1761      0      3      1.0000         .          .         .
+  13.7     1758      0      2      1.0000         .          .         .
+  13.7     1756      0      5      1.0000         .          .         .
+  13.7     1751      0      1      1.0000         .          .         .
+ 13.79     1750      0      1      1.0000         .          .         .
+ 13.79     1749      0      3      1.0000         .          .         .
+ 13.79     1746      0      6      1.0000         .          .         .
+ 13.79     1740      0      1      1.0000         .          .         .
+ 13.87     1739      0      6      1.0000         .          .         .
+ 13.87     1733      0      5      1.0000         .          .         .
+ 13.87     1728      0      1      1.0000         .          .         .
+ 13.95     1727      0      7      1.0000         .          .         .
+ 14.04     1720      0      6      1.0000         .          .         .
+ 14.04     1714      0      3      1.0000         .          .         .
+ 14.12     1711      0      7      1.0000         .          .         .
+  14.2     1704      0      5      1.0000         .          .         .
+ 14.29     1699      0      4      1.0000         .          .         .
+ 14.29     1695      0      2      1.0000         .          .         .
+ 14.37     1693      0      3      1.0000         .          .         .
+ 14.37     1690      0      3      1.0000         .          .         .
+ 14.45     1687      0      2      1.0000         .          .         .
+ 14.45     1685      0      4      1.0000         .          .         .
+ 14.54     1681      0      4      1.0000         .          .         .
+ 14.62     1677      0      2      1.0000         .          .         .
+ 14.62     1675      0      8      1.0000         .          .         .
+  14.7     1667      0      6      1.0000         .          .         .
+  14.7     1661      0      1      1.0000         .          .         .
+ 14.71     1660      0      2      1.0000         .          .         .
+ 14.79     1658      0      1      1.0000         .          .         .
+ 14.79     1657      0      4      1.0000         .          .         .
+ 14.87     1653      0      7      1.0000         .          .         .
+ 14.87     1646      0      1      1.0000         .          .         .
+ 14.87     1645      0      2      1.0000         .          .         .
+ 14.95     1643      0      6      1.0000         .          .         .
+ 14.95     1637      0      2      1.0000         .          .         .
+    15     1635      0    213      1.0000         .          .         .
+    15     1422      0    445      1.0000         .          .         .
+    15      977      0    977      1.0000         .          .         .
+fail_diabetes=1 
+ 1.248      356      1      0      0.9972    0.0028     0.9802    0.9996
+ 1.248      355     66      0      0.8118    0.0207     0.7672    0.8487
+ 1.248      289     12      0      0.7781    0.0220     0.7313    0.8178
+ 1.248      277      5      0      0.7640    0.0225     0.7164    0.8048
+ 3.496      272     14      0      0.7247    0.0237     0.6752    0.7680
+ 3.496      258     21      0      0.6657    0.0250     0.6141    0.7121
+ 3.496      237     34      0      0.5702    0.0262     0.5171    0.6198
+ 5.495      203      1      0      0.5674    0.0263     0.5143    0.6170
+ 5.495      202     50      0      0.4270    0.0262     0.3752    0.4777
+ 5.495      152     12      0      0.3933    0.0259     0.3424    0.4436
+ 5.495      140     10      0      0.3652    0.0255     0.3153    0.4151
+ 7.496      130     16      0      0.3202    0.0247     0.2724    0.3690
+ 7.496      114     26      0      0.2472    0.0229     0.2037    0.2930
+ 7.496       88     23      0      0.1826    0.0205     0.1444    0.2244
+ 9.495       65      2      0      0.1770    0.0202     0.1393    0.2183
+ 9.495       63     24      0      0.1096    0.0166     0.0798    0.1445
+ 9.495       39      7      0      0.0899    0.0152     0.0631    0.1224
+ 9.495       32      1      0      0.0871    0.0149     0.0607    0.1192
+  11.5       31     14      0      0.0478    0.0113     0.0289    0.0734
+  11.5       17     10      0      0.0197    0.0074     0.0088    0.0384
+  11.5        7      7      0      0.0000         .          .         .
+------------------------------------------------------------------------
+Note: Net lost equals the number lost minus the number who entered.
+
+. 
+. ********************************************************************************
+. ** STEP 12. OPTIONAL CHECKS
+. ********************************************************************************
+. 
+. count if fail_diabetes==1
+  356
+
+. count if death_before_diabetes==1
+  894
+
+. count if fu_status==0
+  1,635
+
+. 
+. quietly summarize fu_yrs
+
+. scalar total_py = r(sum)
+
+. 
+. quietly count if fail_diabetes==1
+
+. scalar total_events = r(N)
+
+. 
+. display "Total person-years = " total_py
+Total person-years = 34812.786
+
+. display "Total incident diabetes events = " total_events
+Total incident diabetes events = 356
+
+. display "Incidence rate per 1,000 PY = " (total_events/total_py)*1000
+Incidence rate per 1,000 PY = 10.226128
+
+. 
+. ********************************************************************************
+. ** STEP 13. SAVE ANALYTIC FILE WITH SURVIVAL VARIABLES
+. ********************************************************************************
+. 
+. save ///
+> "D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS\HRS_BMWCDIABETES_ANALYTIC_FINALfi
+> n.dta", ///
+> replace
+file
+    D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\DATA\HRS\HRS_BMWCDIABETES_ANALYTIC_FINA
+    > Lfin.dta saved
+
+. 
+. capture log close
