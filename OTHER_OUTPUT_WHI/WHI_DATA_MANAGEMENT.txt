@@ -1,0 +1,891 @@
+
+. 
+. tempfile bmiwc dem raceeth marital_occ lifestyle hei f2 f134 prev self mrc src follow diab analytic flow
+
+. 
+. * BMI and waist circumference from WHI F80, enrollment visit.
+. import sas using "$datadir\f80_ctos_inv.sas7bdat", clear
+(23 vars, 679,883 obs)
+
+. keep if F80VTYP == 1
+(518,112 observations deleted)
+
+. keep ID F80DAYS F80VTYP F80VY F80VCLO F80EXPC BMI BMIC WAIST
+
+. rename ID HHIDPN
+
+. label values BMIC obesityf
+
+. label var BMI   "Body mass index at WHI baseline"
+
+. label var BMIC  "SAS BMI category at WHI baseline"
+
+. label var WAIST "Waist circumference at WHI baseline"
+
+. 
+. recode BMIC (2=1) (3=2) (4=3) (5=4) (6=5) (1=.) (else=.), gen(bmi5_base)
+(160,381 differences between BMIC and bmi5_base)
+
+. label values bmi5_base bmi5lbl
+
+. label var bmi5_base "BMI category at WHI baseline, excluding underweight"
+
+. 
+. gen byte wc_high_bmi_base = .
+(161,771 missing values generated)
+
+. replace wc_high_bmi_base = 0 if BMIC == 2 & WAIST <  80
+(43,124 real changes made)
+
+. replace wc_high_bmi_base = 1 if BMIC == 2 & WAIST >= 80 & WAIST < .
+(11,662 real changes made)
+
+. replace wc_high_bmi_base = 0 if BMIC == 3 & WAIST <  90
+(40,187 real changes made)
+
+. replace wc_high_bmi_base = 1 if BMIC == 3 & WAIST >= 90 & WAIST < .
+(15,343 real changes made)
+
+. replace wc_high_bmi_base = 0 if BMIC == 4 & WAIST < 105
+(25,514 real changes made)
+
+. replace wc_high_bmi_base = 1 if BMIC == 4 & WAIST >=105 & WAIST < .
+(4,158 real changes made)
+
+. replace wc_high_bmi_base = 0 if BMIC == 5 & WAIST < 115
+(10,415 real changes made)
+
+. replace wc_high_bmi_base = 1 if BMIC == 5 & WAIST >=115 & WAIST < .
+(1,740 real changes made)
+
+. replace wc_high_bmi_base = 0 if BMIC == 6 & WAIST < 115
+(3,009 real changes made)
+
+. replace wc_high_bmi_base = 1 if BMIC == 6 & WAIST >=115 & WAIST < .
+(3,390 real changes made)
+
+. 
+. gen byte bmi_wc10_base = .
+(161,771 missing values generated)
+
+. replace bmi_wc10_base = 1  if bmi5_base == 1 & wc_high_bmi_base == 0
+(43,124 real changes made)
+
+. replace bmi_wc10_base = 2  if bmi5_base == 1 & wc_high_bmi_base == 1
+(11,662 real changes made)
+
+. replace bmi_wc10_base = 3  if bmi5_base == 2 & wc_high_bmi_base == 0
+(40,187 real changes made)
+
+. replace bmi_wc10_base = 4  if bmi5_base == 2 & wc_high_bmi_base == 1
+(15,343 real changes made)
+
+. replace bmi_wc10_base = 5  if bmi5_base == 3 & wc_high_bmi_base == 0
+(25,514 real changes made)
+
+. replace bmi_wc10_base = 6  if bmi5_base == 3 & wc_high_bmi_base == 1
+(4,158 real changes made)
+
+. replace bmi_wc10_base = 7  if bmi5_base == 4 & wc_high_bmi_base == 0
+(10,415 real changes made)
+
+. replace bmi_wc10_base = 8  if bmi5_base == 4 & wc_high_bmi_base == 1
+(1,740 real changes made)
+
+. replace bmi_wc10_base = 9  if bmi5_base == 5 & wc_high_bmi_base == 0
+(3,009 real changes made)
+
+. replace bmi_wc10_base = 10 if bmi5_base == 5 & wc_high_bmi_base == 1
+(3,390 real changes made)
+
+. label values bmi_wc10_base bmiwc10lbl
+
+. label var bmi_wc10_base "Joint BMI and BMI-specific waist circumference categories"
+
+. 
+. keep HHIDPN BMI BMIC WAIST bmi5_base wc_high_bmi_base bmi_wc10_base
+
+. save `bmiwc', replace
+(file C:\Users\baydounm\AppData\Local\Temp\ST_75e4_000001.tmp not found)
+file C:\Users\baydounm\AppData\Local\Temp\ST_75e4_000001.tmp saved as .dta format
+
+. 
+. * Age, education, income. This file is used as the master ID frame.
+. import sas using "$datadir\dem_ctos_inv.sas7bdat", clear
+(33 vars, 161,808 obs)
+
+. rename ID HHIDPN
+
+. keep HHIDPN AGE EDUC INCOME
+
+. 
+. gen byte AGE_BR = .
+(161,808 missing values generated)
+
+. replace AGE_BR = 1 if AGE >= 50 & AGE < 60
+(53,554 real changes made)
+
+. replace AGE_BR = 2 if AGE >= 60 & AGE < 70
+(72,589 real changes made)
+
+. replace AGE_BR = 3 if AGE >= 70 & AGE < 80
+(35,656 real changes made)
+
+. label values AGE_BR agerf
+
+. label var AGE_BR "Age group at WHI baseline"
+
+. 
+. recode EDUC (1/4=1) (5=2) (6/7=3) (8/11=4) (else=.), gen(EDUC_BR)
+(160,461 differences between EDUC and EDUC_BR)
+
+. label values EDUC_BR educbrf
+
+. label var EDUC_BR "Education"
+
+. 
+. recode INCOME (1/2=1) (3/4=2) (5/6=3) (7/8=4) (9=99) (.=99), gen(INCOME_BR)
+(154,871 differences between INCOME and INCOME_BR)
+
+. label values INCOME_BR incomebrf
+
+. label var INCOME_BR "Household income"
+
+. 
+. keep HHIDPN AGE AGE_BR EDUC_BR INCOME_BR
+
+. save `dem', replace
+(file C:\Users\baydounm\AppData\Local\Temp\ST_75e4_000002.tmp not found)
+file C:\Users\baydounm\AppData\Local\Temp\ST_75e4_000002.tmp saved as .dta format
+
+. 
+. * Race and ethnicity.
+. import sas using "$datadir\f41_imputed_ctos_inv.sas7bdat", clear
+(22 vars, 161,808 obs)
+
+. rename ID HHIDPN
+
+. keep HHIDPN RACENIH ETHNICNIH
+
+. rename RACENIH RACE
+
+. rename ETHNICNIH ETHNICITY
+
+. 
+. gen byte RACE_BR = .
+(161,808 missing values generated)
+
+. replace RACE_BR = 1 if RACE == 4
+(14,327 real changes made)
+
+. replace RACE_BR = 2 if RACE == 5
+(137,628 real changes made)
+
+. replace RACE_BR = 3 if inlist(RACE,1,2,3)
+(4,702 real changes made)
+
+. replace RACE_BR = 4 if RACE == 6
+(1,880 real changes made)
+
+. label values RACE_BR racebrf
+
+. label var RACE_BR "Race"
+
+. 
+. gen byte ETHNICITY_BR = .
+(161,808 missing values generated)
+
+. replace ETHNICITY_BR = ETHNICITY if inlist(ETHNICITY,0,1)
+(160,429 real changes made)
+
+. label values ETHNICITY_BR ethnicbrf
+
+. label var ETHNICITY_BR "Ethnicity"
+
+. 
+. keep HHIDPN RACE RACE_BR ETHNICITY ETHNICITY_BR
+
+. save `raceeth', replace
+(file C:\Users\baydounm\AppData\Local\Temp\ST_75e4_000003.tmp not found)
+file C:\Users\baydounm\AppData\Local\Temp\ST_75e4_000003.tmp saved as .dta format
+
+. 
+. * Marital status and occupation.
+. import sas using "$datadir\f20_ctos_inv.sas7bdat", clear
+(51 vars, 161,779 obs)
+
+. rename ID HHIDPN
+
+. keep HHIDPN MARITAL EMPLOYED JOBHMMKR JOBMANGR JOBTECH JOBSERV JOBLABOR JOBOTH NOTWRK RETIRED DISABLED
+
+. 
+. gen byte MARITAL_BR = .
+(161,779 missing values generated)
+
+. replace MARITAL_BR = 1 if inlist(MARITAL,4,5)
+(100,258 real changes made)
+
+. replace MARITAL_BR = 2 if MARITAL == 1
+(7,095 real changes made)
+
+. replace MARITAL_BR = 3 if MARITAL == 2
+(25,803 real changes made)
+
+. replace MARITAL_BR = 4 if MARITAL == 3
+(27,881 real changes made)
+
+. label values MARITAL_BR marital_brf
+
+. label var MARITAL_BR "Marital status"
+
+. 
+. gen byte OCCUPATION = 99
+
+. replace OCCUPATION = 1 if EMPLOYED == 1 & JOBMANGR == 1
+(27,432 real changes made)
+
+. replace OCCUPATION = 2 if JOBTECH == 1
+(45,490 real changes made)
+
+. replace OCCUPATION = 3 if JOBSERV == 1 | JOBLABOR == 1
+(15,324 real changes made)
+
+. replace OCCUPATION = 4 if JOBHMMKR == 1
+(38,722 real changes made)
+
+. replace OCCUPATION = 5 if JOBOTH == 1
+(15,362 real changes made)
+
+. replace OCCUPATION = 6 if NOTWRK == 1 | RETIRED == 1 | DISABLED == 1
+(88,770 real changes made)
+
+. label values OCCUPATION occupf
+
+. label var OCCUPATION "Occupation"
+
+. 
+. keep HHIDPN MARITAL_BR OCCUPATION
+
+. save `marital_occ', replace
+(file C:\Users\baydounm\AppData\Local\Temp\ST_75e4_000004.tmp not found)
+file C:\Users\baydounm\AppData\Local\Temp\ST_75e4_000004.tmp saved as .dta format
+
+. 
+. * Smoking, alcohol, physical activity.
+. import sas using "$datadir\f34_ctos_inv.sas7bdat", clear
+(59 vars, 161,625 obs)
+
+. rename ID HHIDPN
+
+. keep HHIDPN SMOKING ALCOHOL TEXPWK
+
+. 
+. gen byte SMOKING_BR = SMOKING + 1 if !missing(SMOKING)
+(1,943 missing values generated)
+
+. label values SMOKING_BR smoking_brf
+
+. label var SMOKING_BR "Smoking status"
+
+. 
+. gen byte ALCOHOL_BR = .
+(161,625 missing values generated)
+
+. replace ALCOHOL_BR = 1 if ALCOHOL == 1
+(17,652 real changes made)
+
+. replace ALCOHOL_BR = 2 if ALCOHOL == 2
+(30,148 real changes made)
+
+. replace ALCOHOL_BR = 3 if inlist(ALCOHOL,3,4)
+(52,863 real changes made)
+
+. replace ALCOHOL_BR = 4 if inlist(ALCOHOL,5,6)
+(59,921 real changes made)
+
+. label values ALCOHOL_BR alcohol_brf
+
+. label var ALCOHOL_BR "Alcohol consumption"
+
+. 
+. gen double PHYSICAL_ACTIVITY_MET = TEXPWK
+(7,288 missing values generated)
+
+. label var PHYSICAL_ACTIVITY_MET "Physical activity, MET-hours/week"
+
+. 
+. keep HHIDPN SMOKING_BR ALCOHOL_BR PHYSICAL_ACTIVITY_MET
+
+. save `lifestyle', replace
+(file C:\Users\baydounm\AppData\Local\Temp\ST_75e4_000005.tmp not found)
+file C:\Users\baydounm\AppData\Local\Temp\ST_75e4_000005.tmp saved as .dta format
+
+. 
+. * HEI-2015, baseline F60VY=0.
+. import sas using "$datadir\f60_hei_2015_inv.sas7bdat", clear
+(17 vars, 378,571 obs)
+
+. rename ID HHIDPN
+
+. keep if F60VY == 0
+(217,062 observations deleted)
+
+. keep HHIDPN HEI2015_TOTAL_SCORE
+
+. label var HEI2015_TOTAL_SCORE "Healthy Eating Index-2015 total score"
+
+. save `hei', replace
+(file C:\Users\baydounm\AppData\Local\Temp\ST_75e4_000006.tmp not found)
+file C:\Users\baydounm\AppData\Local\Temp\ST_75e4_000006.tmp saved as .dta format
+
+. 
+. * Baseline prevalent diabetes.
+. import sas using "$datadir\f2_ctos_inv.sas7bdat", clear
+(69 vars, 161,808 obs)
+
+. rename ID HHIDPN
+
+. keep HHIDPN DIAB DIABAGE DIABCOMA DIABNW DIABPILL DIABTRT
+
+. save `f2', replace
+(file C:\Users\baydounm\AppData\Local\Temp\ST_75e4_000007.tmp not found)
+file C:\Users\baydounm\AppData\Local\Temp\ST_75e4_000007.tmp saved as .dta format
+
+. 
+. import sas using "$datadir\f134_ctos_inv.sas7bdat", clear
+(7 vars, 114,123 obs)
+
+. rename ID HHIDPN
+
+. keep HHIDPN F134DIAB F134DAYS
+
+. save `f134', replace
+(file C:\Users\baydounm\AppData\Local\Temp\ST_75e4_000008.tmp not found)
+file C:\Users\baydounm\AppData\Local\Temp\ST_75e4_000008.tmp saved as .dta format
+
+. 
+. use `f2', clear
+
+. merge 1:1 HHIDPN using `f134', nogen
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                        47,685
+        from master                    47,685  
+        from using                          0  
+
+    Matched                           114,123  
+    -----------------------------------------
+
+. 
+. gen byte PREVALENT_DIABETES = 0
+
+. replace PREVALENT_DIABETES = 1 if DIAB == 1 | DIABCOMA == 1 | DIABNW == 1 | DIABPILL == 1 | DIABTRT == 1
+(9,618 real changes made)
+
+. label var PREVALENT_DIABETES "Prevalent diabetes at WHI baseline"
+
+. keep HHIDPN PREVALENT_DIABETES
+
+. save `prev', replace
+(file C:\Users\baydounm\AppData\Local\Temp\ST_75e4_000009.tmp not found)
+file C:\Users\baydounm\AppData\Local\Temp\ST_75e4_000009.tmp saved as .dta format
+
+. 
+. * Incident diabetes and censoring from WHI outcome files.
+. import sas using "$datadir\outc_self_ctos_inv.sas7bdat", clear
+(91 vars, 161,808 obs)
+
+. rename ID HHIDPN
+
+. keep HHIDPN F33DIABINSULIN F33DIABPILLS F33DIABDIETEX F33DIABTX F33DIABINSULINDY F33DIABPILLSDY F33DIABDIETEXDY F33DIABTXDY
+
+. rename F33DIABINSULINDY F33DIABINSULINDY_SELF
+
+. rename F33DIABPILLSDY   F33DIABPILLSDY_SELF
+
+. rename F33DIABDIETEXDY  F33DIABDIETEXDY_SELF
+
+. rename F33DIABTXDY      F33DIABTXDY_SELF
+
+. save `self', replace
+(file C:\Users\baydounm\AppData\Local\Temp\ST_75e4_00000a.tmp not found)
+file C:\Users\baydounm\AppData\Local\Temp\ST_75e4_00000a.tmp saved as .dta format
+
+. 
+. import sas using "$datadir\outc_self_x2_mrc_inv.sas7bdat", clear
+(64 vars, 22,316 obs)
+
+. rename ID HHIDPN
+
+. keep HHIDPN F33DIABDIEX F33DIABDIEXDY F33DIABINSULIN F33DIABINSULINDY F33DIABPILLS F33DIABPILLSDY F33DIABTX F33DIABTXDY
+
+. rename F33DIABDIEXDY    F33DIABDIEXDY_MRC
+
+. rename F33DIABINSULINDY F33DIABINSULINDY_MRC
+
+. rename F33DIABPILLSDY   F33DIABPILLSDY_MRC
+
+. rename F33DIABTXDY      F33DIABTXDY_MRC
+
+. save `mrc', replace
+(file C:\Users\baydounm\AppData\Local\Temp\ST_75e4_00000b.tmp not found)
+file C:\Users\baydounm\AppData\Local\Temp\ST_75e4_00000b.tmp saved as .dta format
+
+. 
+. import sas using "$datadir\outc_self_x2_src_inv.sas7bdat", clear
+(112 vars, 71,251 obs)
+
+. rename ID HHIDPN
+
+. keep HHIDPN F33DIABDIEX F33DIABDIEXDY F33DIABINSULIN F33DIABINSULINDY F33DIABPILLS F33DIABPILLSDY F33DIABTX F33DIABTXDY
+
+. rename F33DIABDIEXDY    F33DIABDIEXDY_SRC
+
+. rename F33DIABINSULINDY F33DIABINSULINDY_SRC
+
+. rename F33DIABPILLSDY   F33DIABPILLSDY_SRC
+
+. rename F33DIABTXDY      F33DIABTXDY_SRC
+
+. save `src', replace
+(file C:\Users\baydounm\AppData\Local\Temp\ST_75e4_00000c.tmp not found)
+file C:\Users\baydounm\AppData\Local\Temp\ST_75e4_00000c.tmp saved as .dta format
+
+. 
+. import sas using "$datadir\outc_ct_os_inv.sas7bdat", clear
+(355 vars, 161,808 obs)
+
+. rename ID HHIDPN
+
+. keep HHIDPN ENDFOLLOWDY DEATH DEATHDY
+
+. save `follow', replace
+(file C:\Users\baydounm\AppData\Local\Temp\ST_75e4_00000d.tmp not found)
+file C:\Users\baydounm\AppData\Local\Temp\ST_75e4_00000d.tmp saved as .dta format
+
+. 
+. use `prev', clear
+
+. merge 1:1 HHIDPN using `self', nogen
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                             0
+    Matched                           161,808  
+    -----------------------------------------
+
+. merge 1:1 HHIDPN using `mrc', nogen
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                       139,492
+        from master                   139,492  
+        from using                          0  
+
+    Matched                            22,316  
+    -----------------------------------------
+
+. merge 1:1 HHIDPN using `src', nogen
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                        90,557
+        from master                    90,557  
+        from using                          0  
+
+    Matched                            71,251  
+    -----------------------------------------
+
+. merge 1:1 HHIDPN using `follow', nogen
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                             0
+    Matched                           161,808  
+    -----------------------------------------
+
+. 
+. egen double DIAB_EVENT_DAY = rowmin(F33DIABDIETEXDY_SELF F33DIABINSULINDY_SELF F33DIABPILLSDY_SELF F33DIABTXDY_SELF F33DIABDIEXDY_MRC F33DIABINSULINDY_MRC F33DIABPILLSDY_MRC F33DIABTXDY_MRC F33DIABDIEXDY_SRC F33DIABINSULINDY_SRC F33DIABPILLSDY_SRC F33DI
+> ABTXDY_SRC)
+(118,773 missing values generated)
+
+. egen double CENSOR_DAY = rowmin(DEATHDY ENDFOLLOWDY)
+(690 missing values generated)
+
+. 
+. gen byte INCIDENT_DIABETES = .
+(161,808 missing values generated)
+
+. gen double TTE_DIABETES_DAYS = .
+(161,808 missing values generated)
+
+. replace INCIDENT_DIABETES = 1 if PREVALENT_DIABETES == 0 & !missing(DIAB_EVENT_DAY) & !missing(CENSOR_DAY) & DIAB_EVENT_DAY <= CENSOR_DAY
+(35,148 real changes made)
+
+. replace TTE_DIABETES_DAYS = DIAB_EVENT_DAY if INCIDENT_DIABETES == 1
+(35,148 real changes made)
+
+. replace INCIDENT_DIABETES = 0 if PREVALENT_DIABETES == 0 & missing(INCIDENT_DIABETES) & !missing(CENSOR_DAY)
+(116,421 real changes made)
+
+. replace TTE_DIABETES_DAYS = CENSOR_DAY if INCIDENT_DIABETES == 0
+(116,421 real changes made)
+
+. 
+. gen double fu_yrs = TTE_DIABETES_DAYS / 365.25
+(10,239 missing values generated)
+
+. label var INCIDENT_DIABETES "Incident diabetes"
+
+. label var fu_yrs "Years from WHI baseline to diabetes/censoring"
+
+. 
+. keep HHIDPN PREVALENT_DIABETES INCIDENT_DIABETES TTE_DIABETES_DAYS DIAB_EVENT_DAY CENSOR_DAY fu_yrs DEATH DEATHDY ENDFOLLOWDY
+
+. save `diab', replace
+(file C:\Users\baydounm\AppData\Local\Temp\ST_75e4_00000e.tmp not found)
+file C:\Users\baydounm\AppData\Local\Temp\ST_75e4_00000e.tmp saved as .dta format
+
+. 
+. * Merge master analytic file using DEM as the master to support participant flow.
+. use `dem', clear
+
+. merge 1:1 HHIDPN using `bmiwc', nogen
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                            37
+        from master                        37  
+        from using                          0  
+
+    Matched                           161,771  
+    -----------------------------------------
+
+. merge 1:1 HHIDPN using `raceeth', nogen
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                             0
+    Matched                           161,808  
+    -----------------------------------------
+
+. merge 1:1 HHIDPN using `marital_occ', nogen
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                            29
+        from master                        29  
+        from using                          0  
+
+    Matched                           161,779  
+    -----------------------------------------
+
+. merge 1:1 HHIDPN using `lifestyle', nogen
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                           183
+        from master                       183  
+        from using                          0  
+
+    Matched                           161,625  
+    -----------------------------------------
+
+. merge 1:1 HHIDPN using `hei', nogen
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                           299
+        from master                       299  
+        from using                          0  
+
+    Matched                           161,509  
+    -----------------------------------------
+
+. merge 1:1 HHIDPN using `diab', nogen
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                             0
+    Matched                           161,808  
+    -----------------------------------------
+
+. 
+. capture drop sample_step0 sample_step1 sample_step2 sample_step3 sample_step4 sample_step5 sample_final nmiss_cov
+
+. 
+. gen byte sample_step0 = 1
+
+. label var sample_step0 "All WHI participants in demographic file"
+
+. 
+. gen byte sample_step1 = (sample_step0 == 1 & PREVALENT_DIABETES == 0)
+
+. label var sample_step1 "No self-reported history of diabetes at enrollment"
+
+. 
+. gen byte sample_step2 = (sample_step1 == 1 & !missing(BMI, WAIST, bmi5_base, bmi_wc10_base))
+
+. label var sample_step2 "Complete BMI and waist circumference exposure data"
+
+. 
+. gen byte sample_step3 = (sample_step2 == 1 & BMI >= 18.5 & BMI < .)
+
+. label var sample_step3 "BMI >=18.5 kg/m2; underweight excluded"
+
+. 
+. egen byte nmiss_cov = rowmiss(AGE AGE_BR RACE_BR ETHNICITY_BR MARITAL_BR EDUC_BR OCCUPATION INCOME_BR SMOKING_BR ALCOHOL_BR HEI2015_TOTAL_SCORE PHYSICAL_ACTIVITY_MET)
+
+. gen byte sample_step4 = (sample_step3 == 1 & nmiss_cov == 0)
+
+. label var sample_step4 "Complete selected demographic, socioeconomic, and lifestyle covariates"
+
+. 
+. gen byte sample_step5 = (sample_step4 == 1 & TTE_DIABETES_DAYS > 365.25 & !missing(INCIDENT_DIABETES, fu_yrs))
+
+. label var sample_step5 "Follow-up >12 months and valid diabetes time"
+
+. 
+. gen byte sample_final = sample_step5
+
+. label var sample_final "Final WHI analytic sample"
+
+. 
+. ********************************************************************************
+. * Flowchart dataset and Excel sheet: counts only, then save analytic .dta
+. ********************************************************************************
+. 
+. preserve
+
+.     tempfile flowcounts
+
+. 
+.     count if sample_step0 == 1
+  161,808
+
+.     local n0 = r(N)
+
+.     count if sample_step1 == 1
+  152,190
+
+.     local n1 = r(N)
+
+.     count if sample_step2 == 1
+  149,072
+
+.     local n2 = r(N)
+
+.     count if sample_step3 == 1
+  149,072
+
+.     local n3 = r(N)
+
+.     count if sample_step4 == 1
+  135,105
+
+.     local n4 = r(N)
+
+.     count if sample_step5 == 1
+  133,620
+
+.     local n5 = r(N)
+
+. 
+.     clear
+
+.     set obs 6
+Number of observations (_N) was 0, now 6.
+
+.     gen byte step = _n - 1
+
+.     gen str120 criterion = ""
+(6 missing values generated)
+
+.     gen double n = .
+(6 missing values generated)
+
+.     gen double excluded_from_previous = .
+(6 missing values generated)
+
+. 
+.     replace criterion = "All WHI participants in demographic file" in 1
+(1 real change made)
+
+.     replace criterion = "No self-reported history of diabetes at enrollment" in 2
+(1 real change made)
+
+.     replace criterion = "Complete BMI and waist circumference exposure data" in 3
+(1 real change made)
+
+.     replace criterion = "BMI >=18.5 kg/m2; underweight excluded" in 4
+(1 real change made)
+
+.     replace criterion = "Complete selected demographic, socioeconomic, and lifestyle covariates" in 5
+(1 real change made)
+
+.     replace criterion = "Follow-up >12 months and valid diabetes time" in 6
+(1 real change made)
+
+. 
+.     replace n = `n0' in 1
+(1 real change made)
+
+.     replace n = `n1' in 2
+(1 real change made)
+
+.     replace n = `n2' in 3
+(1 real change made)
+
+.     replace n = `n3' in 4
+(1 real change made)
+
+.     replace n = `n4' in 5
+(1 real change made)
+
+.     replace n = `n5' in 6
+(1 real change made)
+
+. 
+.     replace excluded_from_previous = .              in 1
+(0 real changes made)
+
+.     replace excluded_from_previous = `n0' - `n1'   in 2
+(1 real change made)
+
+.     replace excluded_from_previous = `n1' - `n2'   in 3
+(1 real change made)
+
+.     replace excluded_from_previous = `n2' - `n3'   in 4
+(1 real change made)
+
+.     replace excluded_from_previous = `n3' - `n4'   in 5
+(1 real change made)
+
+.     replace excluded_from_previous = `n4' - `n5'   in 6
+(1 real change made)
+
+. 
+.     label var step "Flowchart step"
+
+.     label var criterion "Inclusion/exclusion stage"
+
+.     label var n "Participants retained"
+
+.     label var excluded_from_previous "Excluded from previous step"
+
+.     format n excluded_from_previous %12.0fc
+
+. 
+.     save "$outdir\WHI_Flowchart_Counts.dta", replace
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\WHI\WHI_Flowchart_Counts.dta saved
+
+. 
+.     capture confirm file "$xlsx"
+
+.     if _rc == 0 {
+.         export excel using "$xlsx", sheet("Flowchart") firstrow(variables) sheetreplace
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\WHI\WHI_Supplementary_Datasheet_Tables1_to_6.xlsx saved
+.     }
+
+.     else {
+.         export excel using "$xlsx", sheet("Flowchart") firstrow(variables) replace
+.     }
+
+. restore
+
+. 
+. ********************************************************************************
+. * Keep final analytic sample and save compact analytic .dta
+. ********************************************************************************
+. 
+. keep if sample_final == 1
+(28,188 observations deleted)
+
+. keep HHIDPN AGE AGE_BR RACE_BR ETHNICITY_BR MARITAL_BR EDUC_BR OCCUPATION ///
+>      INCOME_BR SMOKING_BR ALCOHOL_BR HEI2015_TOTAL_SCORE PHYSICAL_ACTIVITY_MET ///
+>      BMI BMIC WAIST bmi5_base wc_high_bmi_base bmi_wc10_base ///
+>      PREVALENT_DIABETES INCIDENT_DIABETES fu_yrs TTE_DIABETES_DAYS ///
+>      DIAB_EVENT_DAY CENSOR_DAY DEATH DEATHDY ENDFOLLOWDY ///
+>      sample_step0 sample_step1 sample_step2 sample_step3 sample_step4 ///
+>      sample_step5 sample_final
+
+. 
+. rename INCIDENT_DIABETES fail_diabetes
+
+. label var fail_diabetes "Incident diabetes"
+
+. 
+. drop if missing(HHIDPN, fu_yrs, fail_diabetes, bmi5_base, bmi_wc10_base)
+(0 observations deleted)
+
+. drop if fu_yrs <= 0
+(0 observations deleted)
+
+. 
+. stset fu_yrs, failure(fail_diabetes == 1) id(HHIDPN) exit(time 29)
+
+Survival-time data settings
+
+           ID variable: HHIDPN
+         Failure event: fail_diabetes==1
+Observed time interval: (fu_yrs[_n-1], fu_yrs]
+     Exit on or before: time 29
+
+--------------------------------------------------------------------------
+    133,620  total observations
+          0  exclusions
+--------------------------------------------------------------------------
+    133,620  observations remaining, representing
+    133,620  subjects
+     30,897  failures in single-failure-per-subject data
+  2,204,753  total analysis time at risk and under observation
+                                                At risk from t =         0
+                                     Earliest observed entry t =         0
+                                          Last observed exit t =        29
+
+. stsum
+
+         Failure _d: fail_diabetes==1
+   Analysis time _t: fu_yrs
+  Exit on or before: time 29
+        ID variable: HHIDPN
+
+         |               Incidence     Number of   |------ Survival time -----|
+         | Time at risk       rate      subjects        25%       50%       75%
+---------+---------------------------------------------------------------------
+   Total |  2,204,752.7   .0140138        133620   20.82683         .         .
+
+. 
+. gen double py_stset = _t - _t0 if _st == 1
+
+. label var py_stset "Person-years after stset, truncated at 29 years"
+
+. 
+. sort HHIDPN
+
+. set seed 1234
+
+. gen double u_split = runiform() if _st == 1
+
+. gen byte train70 = .
+(133,620 missing values generated)
+
+. replace train70 = 1 if _st == 1 & u_split < 0.70
+(93,463 real changes made)
+
+. replace train70 = 0 if _st == 1 & u_split >= 0.70
+(40,157 real changes made)
+
+. label values train70 splitlbl
+
+. 
+. save "$outdir\WHI_ANALYTIC_AFTER_FLOWCHART_COMPACT.dta", replace
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\WHI\WHI_ANALYTIC_AFTER_FLOWCHART_COMPACT.dta saved
+
+. save `analytic', replace
+(file C:\Users\baydounm\AppData\Local\Temp\ST_75e4_00000f.tmp not found)
+file C:\Users\baydounm\AppData\Local\Temp\ST_75e4_00000f.tmp saved as .dta format
+
+. 
+. capture log close

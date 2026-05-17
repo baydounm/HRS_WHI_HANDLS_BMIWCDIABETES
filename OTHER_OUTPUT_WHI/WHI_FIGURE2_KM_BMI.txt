@@ -1,0 +1,66 @@
+
+. use `cox_km', clear
+
+. keep HHIDPN _st _d _t _t0 fail_diabetes bmi5_base
+
+. compress
+  (0 bytes saved)
+
+. 
+. sts graph, by(bmi5_base) failure ///
+>     title("WHI women: Incident diabetes by BMI category", size(small)) ///
+>     ytitle("Cumulative incidence of diabetes", margin(vlarge) justification(center)) ///
+>     xtitle("Years since WHI baseline") ///
+>     xlabel(0(5)25 29) ///
+>     xscale(range(0 29)) ///
+>     yscale(range(0 1.0) noextend) ///
+>     ylabel(0(0.1)1.0, format(%3.1f)) ///
+>     risktable(0(5)25 29, size(vsmall)) ///
+>     legend(order(1 "Normal" 2 "Overweight" 3 "Obesity 1" 4 "Obesity 2" 5 "Obesity 3") rows(2) symxsize(6) colgap(4) keygap(2) size(small) region(lstyle(none))) ///
+>     graphregion(margin(large)) ///
+>     plotregion(margin(medium))
+
+         Failure _d: fail_diabetes==1
+   Analysis time _t: fu_yrs
+  Exit on or before: time 29
+        ID variable: HHIDPN
+
+. 
+. graph save "$outdir\Figure2_WHI_KM_BMI_diabetes_truncated29yrs.gph", replace
+(file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\WHI\Figure2_WHI_KM_BMI_diabetes_truncated29yrs.gph not found)
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\WHI\Figure2_WHI_KM_BMI_diabetes_truncated29yrs.gph saved
+
+. graph export "$outdir\Figure2_WHI_KM_BMI_diabetes_truncated29yrs.png", replace width(2400)
+(file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\WHI\Figure2_WHI_KM_BMI_diabetes_truncated29yrs.png not found)
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\WHI\Figure2_WHI_KM_BMI_diabetes_truncated29yrs.png saved as PNG format
+
+. graph export "$outdir\Figure2_WHI_KM_BMI_diabetes_truncated29yrs.tif", replace width(2400)
+(file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\WHI\Figure2_WHI_KM_BMI_diabetes_truncated29yrs.tif not found)
+file D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\WHI\Figure2_WHI_KM_BMI_diabetes_truncated29yrs.tif saved as TIFF format
+
+. sts test bmi5_base, logrank
+
+         Failure _d: fail_diabetes==1
+   Analysis time _t: fu_yrs
+  Exit on or before: time 29
+        ID variable: HHIDPN
+
+Equality of survivor functions
+Log-rank test
+
+          |  Observed       Expected
+bmi5_base |    events         events
+----------+-------------------------
+        1 |      8098       12737.00
+        2 |     10852       10964.18
+        3 |      7023        4787.35
+        4 |      3132        1649.72
+        5 |      1792         758.75
+----------+-------------------------
+    Total |     30897       30897.00
+
+                   chi2(4) = 5506.42
+                   Pr>chi2 =  0.0000
+
+. 
+. capture log close

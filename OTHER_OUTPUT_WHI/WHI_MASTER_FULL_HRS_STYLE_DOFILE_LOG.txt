@@ -1,0 +1,56 @@
+
+. 
+. capture program drop open_section_log
+
+. program define open_section_log
+  1.     args section
+  2.     capture log close
+  3.     capture log using "$outdir\WHI_`section'.txt", text replace
+  4. end
+
+. 
+. ********************************************************************************
+. * 1. LABELS
+. ********************************************************************************
+. 
+. label define obesityf 1 "Underweight (<18.5)" 2 "Normal (18.5-24.9)" 3 "Overweight (25.0-29.9)" 4 "Obesity I (30.0-34.9)" 5 "Obesity II (35.0-39.9)" 6 "Extreme Obesity III (>=40)", replace
+
+. label define bmi5lbl 1 "Normal" 2 "Overweight" 3 "Obesity 1" 4 "Obesity 2" 5 "Obesity 3", replace
+
+. label define agerf 1 "50-59" 2 "60-69" 3 "70-79", replace
+
+. label define racebrf 1 "African American" 2 "White" 3 "Other" 4 "Mixed", replace
+
+. label define ethnicbrf 0 "Non-Hispanic" 1 "Hispanic", replace
+
+. label define marital_brf 1 "Married/Partnered" 2 "Single" 3 "Divorced" 4 "Widowed", replace
+
+. label define educbrf 1 "Less than high school" 2 "High school" 3 "Some college" 4 "Completed college or higher", replace
+
+. label define occupf 1 "Managerial/professional" 2 "Technical/sales/administrative" 3 "Service/labor" 4 "Homemaker" 5 "Other" 6 "Not working/retired/disabled" 99 "Missing", replace
+
+. label define incomebrf 1 "< $20,000" 2 "$20,000-$49,999" 3 "$50,000-$99,999" 4 ">=$100,000" 99 "Missing", replace
+
+. label define smoking_brf 1 "Never smoker" 2 "Past smoker" 3 "Current smoker", replace
+
+. label define alcohol_brf 1 "Non-Drinker" 2 "Former Drinker" 3 "< 1 drink/week" 4 ">= 1 drink/week", replace
+
+. label define bmiwc10lbl 1 "Normal, WC <80" 2 "Normal, WC >=80" 3 "Overweight, WC <90" 4 "Overweight, WC >=90" 5 "Obesity 1, WC <105" 6 "Obesity 1, WC >=105" 7 "Obesity 2, WC <115" 8 "Obesity 2, WC >=115" 9 "Obesity 3, WC <115" 10 "Obesity 3, WC >=115", 
+> replace
+
+. label define splitlbl 0 "Test 30%" 1 "Training 70%", replace
+
+. 
+. ********************************************************************************
+. * 2. DATA MANAGEMENT: IMPORT, HARMONIZE, MERGE, FLOWCHART, KEEP VARIABLES
+. ********************************************************************************
+. 
+. open_section_log DATA_MANAGEMENT
+
+. display "Completed WHI analyses. Excel workbook contains Flowchart, Table1, and Table2 only: $xlsx"
+Completed WHI analyses. Excel workbook contains Flowchart, Table1, and Table2 only: D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\WHI\WHI_Supplementary_Datasheet_Tables1_to_6.xlsx
+
+. display "Logs and figures are in: $outdir"
+Logs and figures are in: D:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\SUMMER_STUDENT_2026\HRS_WHI_HANDLS_BMIWCDIABETES\OUTPUT\WHI
+
+. capture log close
