@@ -1,7 +1,7 @@
 ############################################################
 # Forest plots for Tables 5 and 6
 # Workbook: Supplementary_Datasheet1_WHI.xlsx
-# Author: May Baydoun / ChatGPT
+# Author: May Baydoun 
 ############################################################
 
 # 1) Set working directory for a PC
